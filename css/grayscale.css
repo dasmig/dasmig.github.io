@@ -223,11 +223,22 @@ body {
   -webkit-tap-highlight-color: rgba(255, 255, 255, 0.2); }
 
 .projects-cards {
-  background: transparent;
-  margin-bottom: 20px;
+  background-color: #0F0F0F;
+  margin-top: 40px;
+  margin-left: 20px;
+  margin-right: 20px;
   max-width: 350px;
-  min-height: 500px;
-  
+  min-height: 440px; 
+  border: 1px solid #42DCA3;
+}
+  @media (min-width: 700px) {
+    .projects-cards {
+      min-height: 440px;
+    }
+  }
+
+.card-body {
+  margin-bottom: 10px;
 }
 
 .card-buttom {
