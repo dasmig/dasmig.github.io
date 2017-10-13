@@ -122,6 +122,10 @@ a {
         font-size: 100px; }
       .masthead .intro-body .intro-text {
         font-size: 22px; } }
+        
+#resenhashead {
+  background: url("../img/projects/resenhasm.jpg") no-repeat bottom center scroll;
+}
 
 .btn-circle {
   font-size: 26px;
@@ -248,3 +252,7 @@ body {
   transform: translate(-50%);
 }
 
+.badge-holder {
+  position: absolute;
+  left: 3px;
+}
