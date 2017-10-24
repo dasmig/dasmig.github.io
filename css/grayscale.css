@@ -127,6 +127,10 @@ a {
   background: url("../img/projects/resenhasm.jpg") no-repeat bottom center scroll;
 }
 
+#dadoshead {
+  background: url("../img/projects/coming.jpg") no-repeat bottom center scroll;
+}
+
 .btn-circle {
   font-size: 26px;
   width: 55px;
