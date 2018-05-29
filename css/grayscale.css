@@ -135,6 +135,14 @@ a {
   background: url("../img/projects/cthreadsm.jpg") no-repeat bottom center scroll;
 }
 
+#mpcshead {
+  background: url("../img/projects/mpcsm.jpg") no-repeat bottom center scroll;
+}
+
+#appleshead {
+  background: url("../img/projects/applesm.jpg") no-repeat bottom center scroll;
+}
+
 .btn-circle {
   font-size: 26px;
   width: 55px;
