@@ -167,6 +167,10 @@ a {
   background: url("../img/projects/backpropagationm.jpg") no-repeat bottom center scroll;
 }
 
+#guildshead {
+  background: url("../img/projects/guildsm.jpg") no-repeat bottom center scroll;
+}
+
 .btn-circle {
   font-size: 26px;
   width: 55px;
