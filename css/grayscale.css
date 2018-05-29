@@ -143,6 +143,10 @@ a {
   background: url("../img/projects/applesm.jpg") no-repeat bottom center scroll;
 }
 
+#sitehead {
+  background: url("../img/projects/sitem.jpg") no-repeat bottom center scroll;
+}
+
 .btn-circle {
   font-size: 26px;
   width: 55px;
