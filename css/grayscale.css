@@ -155,6 +155,18 @@ a {
   background: url("../img/projects/consolem.jpg") no-repeat bottom center scroll;
 }
 
+#dropboxhead {
+  background: url("../img/projects/dropboxm.jpg") no-repeat bottom center scroll;
+}
+
+#foresthead {
+  background: url("../img/projects/forestm.jpg") no-repeat bottom center scroll;
+}
+
+#backpropagationhead {
+  background: url("../img/projects/backpropagationm.jpg") no-repeat bottom center scroll;
+}
+
 .btn-circle {
   font-size: 26px;
   width: 55px;
