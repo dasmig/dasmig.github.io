@@ -192,6 +192,12 @@ a {
     outline: none;
     background-color: #42DCA3; }
 
+.btn-disabled {
+  color: #42DCA3;
+  border: 1px solid #42DCA3;
+  background-color: transparent;
+  disabled = true; }
+
 ul.banner-social-buttons {
   margin-top: 0; }
   @media (max-width: 1199px) {
