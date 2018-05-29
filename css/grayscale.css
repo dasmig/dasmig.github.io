@@ -151,6 +151,10 @@ a {
   background: url("../img/projects/compm.jpg") no-repeat bottom center scroll;
 }
 
+#consolehead {
+  background: url("../img/projects/consolem.jpg") no-repeat bottom center scroll;
+}
+
 .btn-circle {
   font-size: 26px;
   width: 55px;
