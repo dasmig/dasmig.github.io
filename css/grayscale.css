@@ -131,6 +131,10 @@ a {
   background: url("../img/projects/dadosm.jpg") no-repeat bottom center scroll;
 }
 
+#cthreadhead {
+  background: url("../img/projects/cthreadsm.jpg") no-repeat bottom center scroll;
+}
+
 .btn-circle {
   font-size: 26px;
   width: 55px;
