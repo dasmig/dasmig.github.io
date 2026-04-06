@@ -1,353 +1,547 @@
 <!DOCTYPE html>
 <html lang="en">
 
-  <head>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Diego Dasso Migotto — Software Developer specializing in C++ and game development. Open-source contributor based in Porto Alegre, Brazil.">
+  <meta name="author" content="Diego Dasso Migotto">
 
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="">
-    <meta name="author" content="">
-    
-    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-    <link rel="manifest" href="/manifest.json">
-    <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
-    <meta name="theme-color" content="#ffffff">
-  
-    <title>Dasmig</title>
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#0f0f0f">
 
-    <!-- Bootstrap core CSS -->
-    <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <title>Diego Dasso Migotto — Software Developer</title>
 
-    <!-- Custom fonts for this template -->
-    <link href="vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
-    <link href="https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
-    <link href='https://fonts.googleapis.com/css?family=Cabin:700' rel='stylesheet' type='text/css'>
+  <!-- Modern fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 
-    <!-- Custom styles for this template -->
-    <link href="css/grayscale.css" rel="stylesheet">
+  <!-- Font Awesome 6 (free CDN) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA=="
+    crossorigin="anonymous" referrerpolicy="no-referrer">
 
-  </head>
+  <style>
+    /* ───────────────────── Reset & Base ───────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-  <body id="page-top">
+    :root {
+      --bg:        #0f0f0f;
+      --bg-card:   #161616;
+      --text:      #d3d4d9;
+      --text-muted:#8b8d97;
+      --accent:    #42dca3;
+      --accent-hover:#2fc48e;
+      --border:    #2a2a2a;
+      --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+    }
 
-    <!-- Navigation -->
-    <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
-      <div class="container">
-        <a class="navbar-brand js-scroll-trigger" href="#page-top">Dasmig</a>
-        <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
-          Menu
-          <i class="fa fa-bars"></i>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarResponsive">
-          <ul class="navbar-nav ml-auto">
-            <li class="nav-item">
-              <a class="nav-link js-scroll-trigger" href="#about">Sobre</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link js-scroll-trigger" href="#download">Projetos</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link js-scroll-trigger" href="#contact">Contato</a>
-            </li>
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: var(--font-sans);
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+    a { color: var(--accent); text-decoration: none; transition: color .2s; }
+    a:hover { color: var(--accent-hover); }
+
+    /* ───────────────────── Navigation ───────────────────── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      background: rgba(15,15,15,.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: .9rem 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .nav-brand {
+      font-weight: 700;
+      font-size: 1.15rem;
+      color: var(--text);
+      letter-spacing: .5px;
+    }
+    .nav-links { display: flex; gap: 2rem; list-style: none; }
+    .nav-links a {
+      color: var(--text-muted);
+      font-size: .875rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+    }
+    .nav-links a:hover { color: var(--accent); }
+
+    /* Mobile nav toggle */
+    .nav-toggle { display: none; background: none; border: none; color: var(--text); font-size: 1.4rem; cursor: pointer; }
+    @media (max-width: 640px) {
+      .nav-toggle { display: block; }
+      .nav-links {
+        display: none;
+        flex-direction: column;
+        position: absolute;
+        top: 100%; left: 0; right: 0;
+        background: rgba(15,15,15,.95);
+        padding: 1rem 1.5rem;
+        gap: .75rem;
+        border-bottom: 1px solid var(--border);
+      }
+      .nav-links.open { display: flex; }
+    }
+
+    /* ───────────────────── Hero ───────────────────── */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 6rem 1.5rem 4rem;
+      background:
+        radial-gradient(ellipse at 50% 0%, rgba(66,220,163,.08) 0%, transparent 60%),
+        var(--bg);
+    }
+    .hero h1 {
+      font-size: clamp(2.2rem, 5vw, 3.8rem);
+      font-weight: 700;
+      letter-spacing: -.02em;
+      margin-bottom: .75rem;
+    }
+    .hero .tagline {
+      font-size: clamp(1rem, 2.5vw, 1.25rem);
+      color: var(--text-muted);
+      max-width: 600px;
+      margin: 0 auto 1.5rem;
+    }
+    .hero .location {
+      font-size: .9rem;
+      color: var(--text-muted);
+      margin-bottom: 2rem;
+    }
+    .hero .location i { margin-right: .35rem; color: var(--accent); }
+    .hero-cta { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+    .btn {
+      display: inline-flex; align-items: center; gap: .5rem;
+      padding: .65rem 1.5rem;
+      font-family: var(--font-sans);
+      font-size: .875rem;
+      font-weight: 600;
+      border-radius: 6px;
+      border: 1px solid var(--accent);
+      cursor: pointer;
+      transition: all .2s;
+      text-transform: uppercase;
+      letter-spacing: .04em;
+    }
+    .btn-primary { background: var(--accent); color: var(--bg); border-color: var(--accent); }
+    .btn-primary:hover { background: var(--accent-hover); color: var(--bg); }
+    .btn-outline { background: transparent; color: var(--accent); }
+    .btn-outline:hover { background: var(--accent); color: var(--bg); }
+    .scroll-indicator {
+      margin-top: 3rem;
+      animation: bounce 2s infinite;
+      color: var(--text-muted);
+      font-size: 1.5rem;
+    }
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(8px); }
+    }
+
+    /* ───────────────────── Sections ───────────────────── */
+    section { padding: 6rem 1.5rem; }
+    .container { max-width: 1100px; margin: 0 auto; }
+    .section-title {
+      font-size: 1.75rem;
+      font-weight: 700;
+      margin-bottom: .5rem;
+      text-transform: uppercase;
+      letter-spacing: .04em;
+    }
+    .section-subtitle {
+      color: var(--text-muted);
+      margin-bottom: 3rem;
+      max-width: 600px;
+    }
+
+    /* ───────────────────── About ───────────────────── */
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 3rem;
+      align-items: start;
+    }
+    @media (max-width: 768px) {
+      .about-grid { grid-template-columns: 1fr; }
+    }
+    .about-text p { margin-bottom: 1.25rem; color: var(--text); }
+
+    .skills-list {
+      display: flex; flex-wrap: wrap; gap: .5rem;
+      list-style: none;
+    }
+    .skills-list li {
+      padding: .35rem .85rem;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      font-size: .8rem;
+      font-family: var(--font-mono);
+      color: var(--accent);
+    }
+
+    /* ───────────────────── Projects ───────────────────── */
+    .projects-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 1.5rem;
+    }
+    .project-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1.75rem;
+      transition: border-color .2s, transform .2s;
+      display: flex;
+      flex-direction: column;
+    }
+    .project-card:hover {
+      border-color: var(--accent);
+      transform: translateY(-2px);
+    }
+    .project-card h3 {
+      font-size: 1.15rem;
+      margin-bottom: .5rem;
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+    }
+    .project-card h3 i { color: var(--accent); font-size: .95rem; }
+    .project-card p {
+      color: var(--text-muted);
+      font-size: .9rem;
+      flex: 1;
+      margin-bottom: 1rem;
+    }
+    .project-meta {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      font-size: .8rem;
+      color: var(--text-muted);
+    }
+    .project-meta span { display: flex; align-items: center; gap: .3rem; }
+    .lang-dot {
+      display: inline-block;
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      background: #f34b7d; /* C++ GitHub color */
+    }
+    .project-links { display: flex; gap: .75rem; margin-top: .75rem; }
+    .project-links a {
+      font-size: .8rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: .04em;
+    }
+
+    /* ───────────────────── Experience ───────────────────── */
+    .timeline { position: relative; padding-left: 2rem; }
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 0; top: 0; bottom: 0;
+      width: 2px;
+      background: var(--border);
+    }
+    .timeline-item { position: relative; margin-bottom: 2.5rem; }
+    .timeline-item::before {
+      content: '';
+      position: absolute;
+      left: -2rem; top: .45rem;
+      width: 12px; height: 12px;
+      border-radius: 50%;
+      background: var(--accent);
+      border: 2px solid var(--bg);
+    }
+    .timeline-item h3 { font-size: 1.05rem; margin-bottom: .15rem; text-transform: none; letter-spacing: normal; }
+    .timeline-item .company { color: var(--accent); font-weight: 500; margin-bottom: .25rem; }
+    .timeline-item .period { font-size: .8rem; color: var(--text-muted); margin-bottom: .5rem; }
+    .timeline-item p { font-size: .9rem; color: var(--text-muted); }
+
+    /* ───────────────────── Contact ───────────────────── */
+    #contact { text-align: center; }
+    .social-links {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin-top: 2rem;
+    }
+    .social-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: .5rem;
+      padding: .6rem 1.25rem;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--text);
+      font-size: .85rem;
+      font-weight: 500;
+      transition: all .2s;
+    }
+    .social-btn:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+    .social-btn i { font-size: 1rem; }
+
+    /* ───────────────────── Footer ───────────────────── */
+    footer {
+      padding: 2rem 1.5rem;
+      text-align: center;
+      border-top: 1px solid var(--border);
+      font-size: .8rem;
+      color: var(--text-muted);
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ─── Navigation ─── -->
+  <nav>
+    <div class="nav-inner">
+      <a href="#" class="nav-brand">dasmig</a>
+      <button class="nav-toggle" aria-label="Toggle menu" onclick="document.querySelector('.nav-links').classList.toggle('open')">
+        <i class="fa-solid fa-bars"></i>
+      </button>
+      <ul class="nav-links">
+        <li><a href="#about">About</a></li>
+        <li><a href="#projects">Projects</a></li>
+        <li><a href="#experience">Experience</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- ─── Hero ─── -->
+  <section class="hero" id="home">
+    <div>
+      <h1>Diego Dasso Migotto</h1>
+      <p class="tagline">Software Engineer &amp; Architect — C++, .NET, C#. Open-source library author.</p>
+      <p class="location"><i class="fa-solid fa-location-dot"></i> Porto Alegre, Brazil</p>
+      <div class="hero-cta">
+        <a href="https://github.com/dasmig" class="btn btn-primary" target="_blank" rel="noopener">
+          <i class="fa-brands fa-github"></i> GitHub
+        </a>
+        <a href="https://www.linkedin.com/in/dasmig/" class="btn btn-outline" target="_blank" rel="noopener">
+          <i class="fa-brands fa-linkedin"></i> LinkedIn
+        </a>
+      </div>
+      <a href="#about" class="scroll-indicator" aria-label="Scroll down">
+        <i class="fa-solid fa-chevron-down"></i>
+      </a>
+    </div>
+  </section>
+
+  <!-- ─── About ─── -->
+  <section id="about">
+    <div class="container">
+      <h2 class="section-title">About</h2>
+      <p class="section-subtitle">A quick overview of who I am and what I work with.</p>
+      <div class="about-grid">
+        <div class="about-text">
+          <p>
+            I'm a software engineer based in Porto Alegre, Brazil, working at
+            <strong>AEL Sistemas</strong> in the defense and aerospace sector. I hold a degree
+            in Computer Science from the Federal University of Rio Grande do Sul (UFRGS).
+          </p>
+          <p>
+            I have experience leading development teams, designing software architectures,
+            and delivering products across domains ranging from GIS data processing and
+            hardware automated testing to AI-powered data analysis tools. I enjoy building
+            clean APIs, working close to the metal, and contributing to open-source in my
+            spare time.
+          </p>
+        </div>
+        <div>
+          <h3 class="section-title" style="font-size:1.1rem; margin-bottom:1rem;">Technologies</h3>
+          <ul class="skills-list">
+            <li>C++</li>
+            <li>C#</li>
+            <li>.NET</li>
+            <li>Electron</li>
+            <li>GDAL</li>
+            <li>TCP/ICD</li>
+            <li>Microservices</li>
+            <li>Git</li>
+            <li>CI/CD</li>
+            <li>RAG / AI Agents</li>
+            <li>Linux</li>
+            <li>CMake</li>
+            <li>Docker</li>
           </ul>
         </div>
       </div>
-    </nav>
+    </div>
+  </section>
 
-    <!-- Intro Header -->
-    <header class="masthead">
-      <div class="intro-body">
-        <div class="container">
-          <div class="row">
-            <div class="col-lg-8 mx-auto">
-              <h1 class="brand-heading">Diego Dasso Migotto</h1>
-              <p class="intro-text">Estudante de Ciência da Computação
-                <br>Instituto de Informática da UFRGS</p>
-              <a href="#about" class="btn btn-circle js-scroll-trigger">
-                <i class="fa fa-angle-double-down animated"></i>
-              </a>
-            </div>
+  <!-- ─── Projects ─── -->
+  <section id="projects">
+    <div class="container">
+      <h2 class="section-title">Open-Source Projects</h2>
+      <p class="section-subtitle">Header-only C++23 libraries designed for simplicity and extensibility.</p>
+
+      <div class="projects-grid">
+        <!-- name-generator -->
+        <div class="project-card">
+          <h3><i class="fa-solid fa-code"></i> name-generator</h3>
+          <p>A header-only C++23 library for generating real-world first names and
+            surnames from culture/gender-specific lists. Supports 20+ nationalities.</p>
+          <div class="project-meta">
+            <span><span class="lang-dot"></span> C++</span>
+            <span><i class="fa-solid fa-star"></i> 31</span>
+            <span><i class="fa-solid fa-code-fork"></i> 4</span>
+          </div>
+          <div class="project-links">
+            <a href="https://github.com/dasmig/name-generator" target="_blank" rel="noopener">
+              <i class="fa-brands fa-github"></i> Source
+            </a>
+            <!-- TODO: link to docs if hosted -->
+          </div>
+        </div>
+
+        <!-- entity-generator -->
+        <div class="project-card">
+          <h3><i class="fa-solid fa-code"></i> entity-generator</h3>
+          <p>A header-only C++23 library for generating entities with extensible,
+            user-defined components. Supports EnTT and Flecs adapters.</p>
+          <div class="project-meta">
+            <span><span class="lang-dot"></span> C++</span>
+            <span><i class="fa-solid fa-star"></i> 2</span>
+          </div>
+          <div class="project-links">
+            <a href="https://github.com/dasmig/entity-generator" target="_blank" rel="noopener">
+              <i class="fa-brands fa-github"></i> Source
+            </a>
+          </div>
+        </div>
+
+        <!-- nickname-generator -->
+        <div class="project-card">
+          <h3><i class="fa-solid fa-code"></i> nickname-generator</h3>
+          <p>A header-only C++23 library for generating nicknames, supporting
+            name-based and custom-word-based nickname generation.</p>
+          <div class="project-meta">
+            <span><span class="lang-dot"></span> C++</span>
+            <span><i class="fa-solid fa-star"></i> 2</span>
+          </div>
+          <div class="project-links">
+            <a href="https://github.com/dasmig/nickname-generator" target="_blank" rel="noopener">
+              <i class="fa-brands fa-github"></i> Source
+            </a>
           </div>
         </div>
       </div>
-    </header>
+    </div>
+  </section>
 
-    <!-- About Section -->
-    <section id="about" class="content-section text-center">
-      <div class="container">
-        <div class="row">
-          <div class="col-lg-8 mx-auto">
-            <h2>Sobre</h2>
-            <p>Sou brasileiro, natural de Porto Alegre, RS. Estudo Ciência
-            da Computação na Universidade Federal do Rio Grande do Sul, tendo
-            ingressado no curso no primeiro semestre de 2014. Já tive uma bolsa
-            no setor de TI na Escola de Enfermagem na UFRGS e no momento estou
-            procurando estágio.</p>
-            <p>Tenho maior interesse no desenvolvimento de aplicações utilizando
-            orientação objeto, preferencialmente utilizando C++. No meu tempo 
-            livre posso estar estudando, desenvolvendo algum projeto pessoal ou 
-            com a minha namorada.</p>
-            <p>Abaixo encontram-se alguns de meus projetos, informações de
-            contato, meu github e outras coisinhas mais. Obrigado pela visita!</p>
-          </div>
+  <!-- ─── Experience ─── -->
+  <section id="experience">
+    <div class="container">
+      <h2 class="section-title">Experience</h2>
+      <p class="section-subtitle">Professional background and education.</p>
+
+      <div class="timeline">
+        <div class="timeline-item">
+          <h3>Product Owner &amp; Software Architect — Automated Test Platform</h3>
+          <div class="company">AEL Sistemas</div>
+          <div class="period">Most recent role</div>
+          <p>Led a software team building a hardware automated test desktop application.
+            Acted as architect and product owner. Microservices back-end in .NET
+            with a front-end running in Electron.</p>
+        </div>
+
+        <div class="timeline-item">
+          <h3>Lead Developer &amp; Software Architect — GIS Data Converter</h3>
+          <div class="company">AEL Sistemas</div>
+          <div class="period">Previous role</div>
+          <p>Grew from intern to lead developer of a GIS data converter tool.
+            Wrote and optimized C++ code, authored custom GDAL drivers,
+            designed software components, and handled requirements engineering,
+            E2E and unit testing.</p>
+        </div>
+
+        <div class="timeline-item">
+          <h3>Notable Projects</h3>
+          <div class="company">AEL Sistemas</div>
+          <div class="period"></div>
+          <p>Developed a C# library for low-level TCP communication over a custom ICD,
+            managing message serialization with a clean, easy-to-use API.
+            Integrated an AI Agent into UAV data analysis tools with database
+            connectivity and a RAG system for indexing flight data and
+            providing analytical insights.</p>
+        </div>
+
+        <div class="timeline-item">
+          <h3>B.Sc. Computer Science</h3>
+          <div class="company">Universidade Federal do Rio Grande do Sul (UFRGS)</div>
+          <div class="period">2014</div>
+          <p>Porto Alegre, Brazil.</p>
         </div>
       </div>
-    </section>
+    </div>
+  </section>
 
-    <!-- Projects Section -->
-    <section id="download" class="download-section content-section text-center">
-      <div class="container">
-        <div class="row">
-          <div class="col-lg-8 mx-auto">
-            <h2>Projetos</h2>
-          </div>
-            <ul class="list-inline projects-list">
-              <li class="list-inline-item">
-                <div class="card projects-cards">
-                  <div class="badge-holder"><span class="badge badge-warning">Indev</span>
-                  <span class="badge badge-info">C++</span></div>
-                  <img class="card-img-top" src="./img/projects/guilds.jpg">
-                  <div class="card-body">
-                    <h4 class="card-title">Guilds: Frontiers</h4>
-                    <p class="card-text">Jogo de estratégia sendo desenvolvido 
-                    em conjunto com outros dois programadores e um artista. 
-                    Projeto independente.</p>
-                    <a href="./projects/guilds.html" class="btn btn-default card-buttom">Detalhes</a>
-                  </div>
-                </div>
-              </li>
-              <li class="list-inline-item">
-                <div class="card projects-cards">
-                  <div class="badge-holder"><span class="badge badge-success">Completed</span>
-                  <span class="badge badge-info">HTML/CSS</span></div>
-                  <img class="card-img-top" src="./img/projects/site.jpg">
-                  <div class="card-body">
-                    <h4 class="card-title">Meu Website</h4>
-                    <p class="card-text">Site utilizado como cartão de visitas 
-                    pessoal, desenvolvido individualmente.</p>
-                    <a href="./projects/site.html" class="btn btn-default card-buttom">Detalhes</a>
-                  </div>
-                </div>
-              </li>
-              <li class="list-inline-item">
-                <div class="card projects-cards">
-                  <div class="badge-holder"><span class="badge badge-success">Completed</span>
-                  <span class="badge badge-info">C++</span></div>
-                  <img class="card-img-top" src="./img/projects/console.jpg">
-                  <div class="card-body">
-                    <h4 class="card-title">Console UI</h4>
-                    <p class="card-text">Biblioteca para reprodução de mensagens  
-                    no console desenvolvida para ser utilizada em outros projetos.</p>
-                    <a href="./projects/console.html" class="btn btn-default card-buttom">Detalhes</a>
-                  </div>
-                </div>
-              </li>
-              <li class="list-inline-item">
-                <div class="card projects-cards">
-                  <div class="badge-holder"><span class="badge badge-warning">Indev</span>
-                  <span class="badge badge-info">C/Flex/YACC</span>
-                  <span class="badge badge-primary">INF01147</span></div>
-                  <img class="card-img-top" src="./img/projects/comp.jpg">
-                  <div class="card-body">
-                    <h4 class="card-title">Compilador lang181</h4>
-                    <p class="card-text">Projeto de desenvolvimento de um 
-                    compilador para uma linguagem hipotética na disciplina de 
-                    Compiladores cursada na UFRGS.</p>
-                    <a href="./projects/comp.html" class="btn btn-default card-buttom">Detalhes</a>
-                  </div>
-                </div>
-              </li>
-              <li class="list-inline-item">
-                <div class="card projects-cards">
-                  <div class="badge-holder"><span class="badge badge-warning">Indev</span>
-                  <span class="badge badge-info">C++</span>
-                  <span class="badge badge-primary">INF01151</span></div>
-                  <img class="card-img-top" src="./img/projects/dropbox.jpg">
-                  <div class="card-body">
-                    <h4 class="card-title">Dropbox</h4>
-                    <p class="card-text">Projeto de desenvolvimento de um 
-                    sistema similar ao Dropbox para a disciplina de  
-                    Sistemas Operacionais II cursada na UFRGS.</p>
-                    <a href="./projects/dropbox.html" class="btn btn-default card-buttom">Detalhes</a>
-                  </div>
-                </div>
-              </li>
-              <li class="list-inline-item">
-                <div class="card projects-cards">
-                  <div class="badge-holder"><span class="badge badge-warning">Indev</span>
-                  <span class="badge badge-info">C++</span>
-                  <span class="badge badge-primary">INF01017</span></div>
-                  <img class="card-img-top" src="./img/projects/backpropagation.jpg">
-                  <div class="card-body">
-                    <h4 class="card-title">Backpropagation</h4>
-                    <p class="card-text">Implementação do algoritmo  
-                    de redes neurais na disciplina de 
-                    Aprendizado de Máquina cursada na UFRGS.</p>
-                    <a href="./projects/backpropagation.html" class="btn btn-default card-buttom">Detalhes</a>
-                  </div>
-                </div>
-              </li>
-              <li class="list-inline-item">
-                <div class="card projects-cards">
-                  <div class="badge-holder"><span class="badge badge-success">Completed</span>
-                  <span class="badge badge-info">C++</span>
-                  <span class="badge badge-primary">INF01017</span></div>
-                  <img class="card-img-top" src="./img/projects/forest.jpg">
-                  <div class="card-body">
-                    <h4 class="card-title">Random Forest</h4>
-                    <p class="card-text">Implementação do algoritmo  
-                    de árvores de decisão na disciplina de 
-                    Aprendizado de Máquina cursada na UFRGS.</p>
-                    <a href="./projects/forest.html" class="btn btn-default card-buttom">Detalhes</a>
-                  </div>
-                </div>
-              </li>
-              <li class="list-inline-item">
-                <div class="card projects-cards">
-                  <div class="badge-holder"><span class="badge badge-success">Completed</span>
-                  <span class="badge badge-info">C</span>
-                  <span class="badge badge-primary">INF01142</span></div>
-
-                  <img class="card-img-top" src="./img/projects/cthreads.jpg">
-                  <div class="card-body">
-                    <h4 class="card-title">Biblioteca Cthreads</h4>
-                    <p class="card-text">Projeto de desenvolvimento de uma 
-                    biblioteca de Thread da disciplina de Sistemas Operacionais 
-                    cursada na UFRGS.</p>
-                    <a href="./projects/cthread.html" class="btn btn-default card-buttom">Detalhes</a>
-                  </div>
-                </div>
-              </li>
-              <li class="list-inline-item">
-                <div class="card projects-cards">
-                  <div class="badge-holder"><span class="badge badge-success">Completed</span>
-                  <span class="badge badge-info">C++</span>
-                  <span class="badge badge-primary">INF05010</span></div>
-                  <img class="card-img-top" src="./img/projects/mpcs.jpg">
-                  <div class="card-body">
-                    <h4 class="card-title">MPCS+GRASP </h4>
-                    <p class="card-text">Resolução do problema de Mínima Partição Comum
-                    entre Strings utilizando a heurística GRASP.</p>
-                    <a href="./projects/mpcs.html" class="btn btn-default card-buttom">Detalhes</a>
-                  </div>
-                </div>
-              </li>
-              <li class="list-inline-item">
-                <div class="card projects-cards">
-                  <div class="badge-holder"><span class="badge badge-success">Completed</span>
-                  <span class="badge badge-info">C/OpenGL</span>
-                  <span class="badge badge-primary">INF01047</span></div>
-                  <img class="card-img-top" src="./img/projects/apples.jpg">
-                  <div class="card-body">
-                    <h4 class="card-title">Apples and Oranges</h4>
-                    <p class="card-text">Jogo desenvolvido individualmente para 
-                    a disciplina de Fundamentos de Computação Gráfica cursada 
-                    na UFRGS.</p>
-                    <a href="./projects/apples.html" class="btn btn-default card-buttom">Detalhes</a>
-                  </div>
-                </div>
-              </li>
-              <li class="list-inline-item">
-                <div class="card projects-cards">
-                  <div class="badge-holder"><span class="badge badge-success">Completed</span>
-                  <span class="badge badge-info">PT-BR</span>
-                  <span class="badge badge-primary">INF01140</span></div>
-                  <img class="card-img-top" src="./img/projects/resenhas.jpg">
-                  <div class="card-body">
-                    <h4 class="card-title">Resenhas</h4>
-                    <p class="card-text">Resenhas escritas para a disciplina
-                    de Computador e Sociedade cursada na UFRGS.</p>
-                    <a href="./projects/resenhas.html" class="btn btn-default card-buttom">Detalhes</a>
-                  </div>
-                </div>
-              </li>
-              <li class="list-inline-item">
-                <div class="card projects-cards">
-                  <div class="badge-holder"><span class="badge badge-success">Completed</span>
-                  <span class="badge badge-info">PT-BR</span>
-                  <span class="badge badge-primary">INF01140</span></div>
-                  <img class="card-img-top" src="./img/projects/dados.jpg">
-                  <div class="card-body">
-                    <h4 class="card-title">Dados do Usuário</h4>
-                    <p class="card-text">Projeto de pesquisa sobre a segurança 
-                    de dados do usuário desenvolvido para a disciplina de 
-                    Computador e Sociedade na UFRGS.</p>
-                    <a href="./projects/dadosusuario.html" class="btn btn-default card-buttom">Detalhes</a>
-                  </div>
-                </div>
-              </li>
-            </ul>
-          </div>
+  <!-- ─── Contact ─── -->
+  <section id="contact">
+    <div class="container">
+      <h2 class="section-title">Get in Touch</h2>
+      <p class="section-subtitle" style="margin-left:auto;margin-right:auto;">
+        Feel free to reach out for collaborations, open-source contributions, or just to say hi.
+      </p>
+      <div class="social-links">
+        <a href="mailto:diegomigotto@hotmail.com" class="social-btn">
+          <i class="fa-solid fa-envelope"></i> Email
+        </a>
+        <a href="https://github.com/dasmig" class="social-btn" target="_blank" rel="noopener">
+          <i class="fa-brands fa-github"></i> GitHub
+        </a>
+        <a href="https://www.linkedin.com/in/dasmig/" class="social-btn" target="_blank" rel="noopener">
+          <i class="fa-brands fa-linkedin"></i> LinkedIn
+        </a>
       </div>
-      
-    </section>
+    </div>
+  </section>
 
-    <!-- Contact Section -->
-    <section id="contact" class="content-section text-center">
-      <div class="container">
-        <div class="row">
-          <div class="col-lg-8 mx-auto">
-            <h2>Contato</h2>
-            <p>Qualquer que seja o motivo, pode entrar em contato comigo através
-            do meu e-mail. Estão também abaixo os links para meu perfil no
-            spotify, github, steam e myanimelist.</p>
-            <ul class="list-inline banner-social-buttons">
-              <li class="list-inline-item">
-                <a href="https://open.spotify.com/user/dasmig" class="btn btn-default btn-lg">
-                  <i class="fa fa-spotify fa-fw"></i>
-                  <span class="network-name">Spotify</span>
-                </a>
-              </li>
-              <li class="list-inline-item">
-                <a href="https://github.com/dasmig" class="btn btn-default btn-lg">
-                  <i class="fa fa-github fa-fw"></i>
-                  <span class="network-name">Github</span>
-                </a>
-              </li>
-              <li class="list-inline-item">
-                <a href="mailto:diegomigotto@hotmail.com" class="btn btn-default btn-lg">
-                  <i class="fa fa-envelope fa-fw"></i>
-                  <span class="network-name">Email</span>
-                </a>
-              </li>
-              <li class="list-inline-item">
-                <a href="http://steamcommunity.com/id/dasmig" class="btn btn-default btn-lg">
-                  <i class="fa fa-steam fa-fw"></i>
-                  <span class="network-name">Steam</span>
-                </a>
-              </li>
-              <li class="list-inline-item">
-                <a href="https://myanimelist.net/profile/dasmig" class="btn btn-default btn-lg">
-                  <i class="fa fa-play fa-fw"></i>
-                  <span class="network-name">MAL</span>
-                </a>
-              </li>
-            </ul>
-          </div>
-        </div>
-      </div>
-    </section>
+  <!-- ─── Footer ─── -->
+  <footer>
+    <p>&copy; 2026 Diego Dasso Migotto. Built with plain HTML &amp; CSS.</p>
+  </footer>
 
-    <!-- Footer -->
-    <footer>
-      <div class="container text-center">
-        <p>Diego Migotto | 2018</p>
-      </div>
-    </footer>
+  <!-- Minimal vanilla JS – no jQuery needed -->
+  <script>
+    // Close mobile menu on link click
+    document.querySelectorAll('.nav-links a').forEach(link => {
+      link.addEventListener('click', () => {
+        document.querySelector('.nav-links').classList.remove('open');
+      });
+    });
+  </script>
 
-    <!-- Bootstrap core JavaScript -->
-    <script src="vendor/jquery/jquery.min.js"></script>
-    <script src="vendor/popper/popper.min.js"></script>
-    <script src="vendor/bootstrap/js/bootstrap.min.js"></script>
-
-    <!-- Plugin JavaScript -->
-    <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
-
-    <!-- Custom scripts for this template -->
-    <script src="js/grayscale.min.js"></script>
-
-  </body>
-
+</body>
 </html>
