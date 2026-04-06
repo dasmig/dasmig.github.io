@@ -204,6 +204,20 @@
     }
 
     /* ───────────────────── Projects ───────────────────── */
+    .demo-callout {
+      display: flex;
+      align-items: center;
+      gap: .75rem;
+      background: rgba(66, 220, 163, .08);
+      border: 1px solid rgba(66, 220, 163, .25);
+      border-radius: 8px;
+      padding: .85rem 1.25rem;
+      margin-bottom: 2rem;
+      font-size: .9rem;
+    }
+    .demo-callout i { color: var(--accent); font-size: 1.15rem; flex-shrink: 0; }
+    .demo-callout a { font-weight: 600; }
+
     .projects-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
@@ -407,6 +421,12 @@
       <h2 class="section-title">Open-Source Projects</h2>
       <p class="section-subtitle">Header-only C++23 libraries designed for simplicity and extensibility.</p>
 
+      <div class="demo-callout">
+        <i class="fa-solid fa-microchip"></i>
+        <span><strong>Try them live</strong> — all three libraries run in the browser via WebAssembly.
+          <a href="https://dasmig.github.io/generator-tech-demo/" target="_blank" rel="noopener">Launch interactive demo →</a></span>
+      </div>
+
       <div class="projects-grid">
         <!-- name-generator -->
         <div class="project-card">
@@ -422,7 +442,9 @@
             <a href="https://github.com/dasmig/name-generator" target="_blank" rel="noopener">
               <i class="fa-brands fa-github"></i> Source
             </a>
-            <!-- TODO: link to docs if hosted -->
+            <a href="https://dasmig.github.io/generator-tech-demo/" target="_blank" rel="noopener">
+              <i class="fa-solid fa-play"></i> Live Demo
+            </a>
           </div>
         </div>
 
@@ -439,6 +461,9 @@
             <a href="https://github.com/dasmig/entity-generator" target="_blank" rel="noopener">
               <i class="fa-brands fa-github"></i> Source
             </a>
+            <a href="https://dasmig.github.io/generator-tech-demo/" target="_blank" rel="noopener">
+              <i class="fa-solid fa-play"></i> Live Demo
+            </a>
           </div>
         </div>
 
@@ -454,6 +479,9 @@
           <div class="project-links">
             <a href="https://github.com/dasmig/nickname-generator" target="_blank" rel="noopener">
               <i class="fa-brands fa-github"></i> Source
+            </a>
+            <a href="https://dasmig.github.io/generator-tech-demo/" target="_blank" rel="noopener">
+              <i class="fa-solid fa-play"></i> Live Demo
             </a>
           </div>
         </div>
