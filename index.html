@@ -547,7 +547,7 @@
 
         <div class="demo-callout rv">
           <i class="fa-solid fa-microchip"></i>
-          <span><strong>Try them live</strong> — nine of the ten libraries run in the browser via WebAssembly.
+          <span><strong>Try them live</strong> — all ten libraries run in the browser via WebAssembly.
             <a href="https://dasmig.github.io/generator-tech-demo/" target="_blank" rel="noopener">Launch interactive demo →</a></span>
         </div>
 
@@ -564,8 +564,6 @@
                 surnames from culture/gender-specific lists. Supports 20+ nationalities.</p>
               <div class="lib-meta">
                 <span><span class="lang-dot"></span> C++</span>
-                <span><i class="fa-solid fa-star"></i> 31</span>
-                <span><i class="fa-solid fa-code-fork"></i> 4</span>
               </div>
               <div class="lib-links">
                 <a class="primary" href="https://github.com/dasmig/name-generator" target="_blank" rel="noopener"><i class="fa-brands fa-github"></i> Source</a>
@@ -645,6 +643,7 @@
               </div>
               <div class="lib-links">
                 <a class="primary" href="https://github.com/dasmig/trait-generator" target="_blank" rel="noopener"><i class="fa-brands fa-github"></i> Source</a>
+                <a href="https://dasmig.github.io/generator-tech-demo/" target="_blank" rel="noopener"><i class="fa-solid fa-play"></i> Live Demo</a>
               </div>
             </article>
 
@@ -702,7 +701,6 @@
                 user-defined components. Supports EnTT and Flecs adapters.</p>
               <div class="lib-meta">
                 <span><span class="lang-dot"></span> C++</span>
-                <span><i class="fa-solid fa-star"></i> 2</span>
               </div>
               <div class="lib-links">
                 <a class="primary" href="https://github.com/dasmig/entity-generator" target="_blank" rel="noopener"><i class="fa-brands fa-github"></i> Source</a>
@@ -845,6 +843,33 @@
         return b;
       });
 
+      // Fill in star/fork counts from one GitHub API call, cached for an hour
+      // (unauthenticated requests are limited to 60/hour per IP).
+      (function loadRepoStats() {
+        const KEY = 'dasmig-repo-stats', TTL = 3600e3;
+        const apply = stats => libs.forEach(lib => {
+          const r = stats[lib.dataset.name];
+          const meta = lib.querySelector('.lib-meta');
+          if (!r || !meta) return;
+          meta.insertAdjacentHTML('beforeend',
+            `<span><i class="fa-solid fa-star"></i> ${r.stars}</span>` +
+            `<span><i class="fa-solid fa-code-fork"></i> ${r.forks}</span>`);
+        });
+        try {
+          const c = JSON.parse(localStorage.getItem(KEY));
+          if (c && Date.now() - c.t < TTL) return apply(c.stats);
+        } catch (e) {}
+        fetch('https://api.github.com/users/dasmig/repos?per_page=100')
+          .then(r => r.ok ? r.json() : Promise.reject())
+          .then(repos => {
+            const stats = {};
+            repos.forEach(r => { stats[r.name] = { stars: r.stargazers_count, forks: r.forks_count }; });
+            try { localStorage.setItem(KEY, JSON.stringify({ t: Date.now(), stats })); } catch (e) {}
+            apply(stats);
+          })
+          .catch(() => {});
+      })();
+
       function select(i, focus) {
         current = i;
         libs.forEach((l, n) => l.classList.toggle('active', n === i));
@@ -875,7 +900,8 @@
     })();
 
     // ── Background particles ────────────────────────────────────────
-    // Glow dust drifting upward; swarms the contact buttons while that panel is on screen.
+    // Sparse glow dots drifting slowly; nearby pairs get a faint link line.
+    // Swarms the contact buttons (links fade out) while that panel is on screen.
     (() => {
       const canvas = document.getElementById('particles');
       const ctx = canvas.getContext('2d');
@@ -891,13 +917,16 @@
       sg.fillStyle = grad;
       sg.fillRect(0, 0, 64, 64);
 
+      const LINK = 145, CURSOR_LINK = 180, LINE_ALPHA = 0.27;
       let w = 0, h = 0, particles = [], flocking = false, raf = 0, last = performance.now();
+      let mx = -9999, my = -9999;
       const flockSection = document.getElementById('contact');
       const flockTarget = document.querySelector('.social-links');
 
-      const spawn = anywhere => ({
-        x: rand(0, w), y: anywhere ? rand(0, h) : h + 10,
-        size: rand(1.5, 3.2), speed: rand(18, 48), sway: rand(6, 22), phase: rand(0, Math.PI * 2),
+      const spawn = () => ({
+        x: rand(0, w), y: rand(0, h),
+        vx: rand(-9, 9), vy: rand(-9, 9),
+        size: rand(1.2, 2.6),
         angle: rand(0, Math.PI * 2), spin: rand(0.5, 1.3) * (Math.random() < 0.5 ? -1 : 1),
         rx: rand(0, 1), ry: rand(0, 1), ease: rand(1.2, 3), boost: 0,
       });
@@ -907,7 +936,7 @@
         w = window.innerWidth; h = window.innerHeight;
         canvas.width = w * dpr; canvas.height = h * dpr;
         ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-        particles = Array.from({ length: w < 700 ? 28 : 48 }, () => spawn(true));
+        particles = Array.from({ length: w < 700 ? 32 : 56 }, spawn);
       }
 
       function frame(now) {
@@ -923,6 +952,7 @@
           tw = r.width; th = r.height; hasTarget = true;
         }
 
+        let calm = 1;
         for (const p of particles) {
           if (hasTarget) {
             p.angle += p.spin * dt;
@@ -932,20 +962,43 @@
             p.y += (ty + Math.sin(p.angle) * ry - p.y) * k;
             p.boost = Math.min(1, p.boost + dt * 1.5);
           } else {
-            p.y -= p.speed * dt;
-            p.x += Math.sin(now / 1000 + p.phase) * p.sway * dt;
+            p.x += p.vx * dt; p.y += p.vy * dt;
+            if (p.x < -10) p.x = w + 10; else if (p.x > w + 10) p.x = -10;
+            if (p.y < -10) p.y = h + 10; else if (p.y > h + 10) p.y = -10;
             p.boost = Math.max(0, p.boost - dt * 1.5);
-            if (p.y < -10) Object.assign(p, spawn(false));
           }
-          // fade near the top and bottom edges while drifting
-          const edge = Math.min(p.y, h - p.y) / (h * 0.25);
-          ctx.globalAlpha = Math.max(Math.max(0, Math.min(1, edge)) * 0.8, p.boost);
+          calm = Math.min(calm, 1 - p.boost);
+        }
+
+        // faint links between close pairs (and the cursor), fading while swarming
+        if (calm > 0.02) {
+          ctx.lineWidth = 1;
+          ctx.strokeStyle = '#42dca3';
+          const pts = mx > -999 ? particles.concat({ x: mx, y: my, cursor: true }) : particles;
+          for (let i = 0; i < pts.length; i++) {
+            for (let j = i + 1; j < pts.length; j++) {
+              const a = pts[i], b = pts[j];
+              const lim = a.cursor || b.cursor ? CURSOR_LINK : LINK;
+              const dx = a.x - b.x, dy = a.y - b.y;
+              if (Math.abs(dx) > lim || Math.abs(dy) > lim) continue;
+              const d = Math.hypot(dx, dy);
+              if (d >= lim) continue;
+              ctx.globalAlpha = (1 - d / lim) * LINE_ALPHA * calm;
+              ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.stroke();
+            }
+          }
+        }
+
+        for (const p of particles) {
+          ctx.globalAlpha = 0.55 + p.boost * 0.4;
           const s = p.size * (6 + p.boost * 3);
           ctx.drawImage(sprite, p.x - s / 2, p.y - s / 2, s, s);
         }
         raf = requestAnimationFrame(frame);
       }
 
+      window.addEventListener('pointermove', e => { mx = e.clientX; my = e.clientY; }, { passive: true });
+      document.addEventListener('pointerleave', () => { mx = my = -9999; });
       resize();
       window.addEventListener('resize', resize);
       new IntersectionObserver(([e]) => { flocking = e.isIntersecting; }, { threshold: 0.5 }).observe(flockSection);
