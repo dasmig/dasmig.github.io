@@ -18,30 +18,39 @@
   <!-- Modern fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 
   <!-- Font Awesome 6 (free CDN) -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
     integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA=="
     crossorigin="anonymous" referrerpolicy="no-referrer">
 
+  <script>document.documentElement.classList.add('js');</script>
+
   <style>
     /* ───────────────────── Reset & Base ───────────────────── */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --bg:        #0f0f0f;
-      --bg-card:   #161616;
+      color-scheme: dark;
+      --bg:        #0b0f0e;
+      --bg-card:   rgba(22,26,25,.7);
       --text:      #d3d4d9;
       --text-muted:#8b8d97;
       --accent:    #42dca3;
       --accent-hover:#2fc48e;
-      --border:    #2a2a2a;
+      --border:    #2a2f2e;
+      --ease:      cubic-bezier(.2,.7,.2,1);
       --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
       --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+      --cycle:     7s;
     }
 
-    html { scroll-behavior: smooth; }
+    html { scroll-behavior: smooth; scroll-snap-type: y proximity; }
+    /* Strict section-by-section snapping only where a section fits the screen. */
+    @media (min-width: 900px) and (min-height: 640px) {
+      html { scroll-snap-type: y mandatory; }
+    }
     body {
       font-family: var(--font-sans);
       background: var(--bg);
@@ -51,14 +60,49 @@
     }
     a { color: var(--accent); text-decoration: none; transition: color .2s; }
     a:hover { color: var(--accent-hover); }
+    :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+
+    /* ───────────────────── Page-wide background ───────────────────── */
+    .bg {
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      overflow: hidden;
+      pointer-events: none;
+      background: radial-gradient(circle at 50% 30%, #11231e, var(--bg) 60%);
+    }
+    .orb {
+      position: absolute;
+      width: 42vmax; height: 42vmax;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(66,220,163,.22), transparent 65%);
+      filter: blur(40px);
+      animation: orb 22s ease-in-out infinite alternate;
+    }
+    .orb-a { top: -12vmax; left: -12vmax; }
+    .orb-b {
+      right: -14vmax; bottom: -14vmax;
+      background: radial-gradient(circle, rgba(56,150,220,.18), transparent 65%);
+      animation-duration: 28s;
+      animation-direction: alternate-reverse;
+    }
+    .orb-c {
+      width: 26vmax; height: 26vmax;
+      top: 40%; left: 55%;
+      background: radial-gradient(circle, rgba(66,220,163,.12), transparent 65%);
+      animation-duration: 34s;
+    }
+    @keyframes orb { to { transform: translate(14vmax, 10vmax) scale(1.2); } }
+    .particles { position: absolute; inset: 0; width: 100%; height: 100%; }
 
     /* ───────────────────── Navigation ───────────────────── */
     nav {
       position: fixed;
       top: 0; left: 0; right: 0;
       z-index: 100;
-      background: rgba(15,15,15,.85);
+      background: rgba(11,15,14,.7);
       backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
       border-bottom: 1px solid var(--border);
     }
     .nav-inner {
@@ -82,10 +126,13 @@
       font-weight: 500;
       text-transform: uppercase;
       letter-spacing: .05em;
+      padding-bottom: .25rem;
+      border-bottom: 2px solid transparent;
     }
-    .nav-links a:hover { color: var(--accent); }
+    .nav-links a:hover,
+    .nav-links a.active { color: var(--accent); }
+    .nav-links a.active { border-bottom-color: var(--accent); }
 
-    /* Mobile nav toggle */
     .nav-toggle { display: none; background: none; border: none; color: var(--text); font-size: 1.4rem; cursor: pointer; }
     @media (max-width: 640px) {
       .nav-toggle { display: block; }
@@ -94,7 +141,7 @@
         flex-direction: column;
         position: absolute;
         top: 100%; left: 0; right: 0;
-        background: rgba(15,15,15,.95);
+        background: rgba(11,15,14,.95);
         padding: 1rem 1.5rem;
         gap: .75rem;
         border-bottom: 1px solid var(--border);
@@ -102,68 +149,19 @@
       .nav-links.open { display: flex; }
     }
 
-    /* ───────────────────── Hero ───────────────────── */
-    .hero {
+    /* ───────────────────── Full-height panels ───────────────────── */
+    .panel {
+      position: relative;
       min-height: 100vh;
+      min-height: 100dvh;
       display: flex;
-      align-items: center;
+      flex-direction: column;
       justify-content: center;
-      text-align: center;
-      padding: 6rem 1.5rem 4rem;
-      background:
-        radial-gradient(ellipse at 50% 0%, rgba(66,220,163,.08) 0%, transparent 60%),
-        var(--bg);
+      padding: 6rem 1.5rem 5.5rem;
+      scroll-snap-align: start;
+      scroll-snap-stop: always;
     }
-    .hero h1 {
-      font-size: clamp(2.2rem, 5vw, 3.8rem);
-      font-weight: 700;
-      letter-spacing: -.02em;
-      margin-bottom: .75rem;
-    }
-    .hero .tagline {
-      font-size: clamp(1rem, 2.5vw, 1.25rem);
-      color: var(--text-muted);
-      max-width: 600px;
-      margin: 0 auto 1.5rem;
-    }
-    .hero .location {
-      font-size: .9rem;
-      color: var(--text-muted);
-      margin-bottom: 2rem;
-    }
-    .hero .location i { margin-right: .35rem; color: var(--accent); }
-    .hero-cta { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
-    .btn {
-      display: inline-flex; align-items: center; gap: .5rem;
-      padding: .65rem 1.5rem;
-      font-family: var(--font-sans);
-      font-size: .875rem;
-      font-weight: 600;
-      border-radius: 6px;
-      border: 1px solid var(--accent);
-      cursor: pointer;
-      transition: all .2s;
-      text-transform: uppercase;
-      letter-spacing: .04em;
-    }
-    .btn-primary { background: var(--accent); color: var(--bg); border-color: var(--accent); }
-    .btn-primary:hover { background: var(--accent-hover); color: var(--bg); }
-    .btn-outline { background: transparent; color: var(--accent); }
-    .btn-outline:hover { background: var(--accent); color: var(--bg); }
-    .scroll-indicator {
-      margin-top: 3rem;
-      animation: bounce 2s infinite;
-      color: var(--text-muted);
-      font-size: 1.5rem;
-    }
-    @keyframes bounce {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(8px); }
-    }
-
-    /* ───────────────────── Sections ───────────────────── */
-    section { padding: 6rem 1.5rem; }
-    .container { max-width: 1100px; margin: 0 auto; }
+    .container { width: 100%; max-width: 1100px; margin: 0 auto; }
     .section-title {
       font-size: 1.75rem;
       font-weight: 700;
@@ -173,9 +171,89 @@
     }
     .section-subtitle {
       color: var(--text-muted);
-      margin-bottom: 3rem;
+      margin-bottom: 2.25rem;
       max-width: 600px;
     }
+
+    /* Scroll hint: a bobbing chevron that jumps to the next panel */
+    .scroll-hint {
+      position: absolute;
+      bottom: 2rem;
+      left: calc(50% - 7px);
+      width: 14px; height: 14px;
+      border-right: 2px solid var(--text-muted);
+      border-bottom: 2px solid var(--text-muted);
+      animation: bob 2s ease-in-out infinite;
+    }
+    .scroll-hint::before { /* bigger hit area than the glyph */
+      content: ''; position: absolute; inset: -18px;
+    }
+    .scroll-hint:hover { border-color: var(--accent); }
+    .scroll-hint.up { animation-name: bob-up; }
+    @keyframes bob {
+      0%, 100% { transform: translateY(0) rotate(45deg); opacity: .5; }
+      50%      { transform: translateY(8px) rotate(45deg); opacity: 1; }
+    }
+    @keyframes bob-up {
+      0%, 100% { transform: translateY(0) rotate(-135deg); opacity: .5; }
+      50%      { transform: translateY(-8px) rotate(-135deg); opacity: 1; }
+    }
+
+    /* ───────────────────── Hero ───────────────────── */
+    .hero { align-items: center; text-align: center; }
+    .hero > div { display: flex; flex-direction: column; align-items: center; }
+    .hero > div > * { animation: rise 1s var(--ease) both; }
+    .hero h1 {
+      font-size: clamp(2.2rem, 6vw, 4.2rem);
+      font-weight: 700;
+      letter-spacing: -.02em;
+      margin-bottom: .75rem;
+      background: linear-gradient(90deg, #fff, var(--accent), #fff);
+      background-size: 200% 100%;
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      animation: rise 1s var(--ease) .1s both, shimmer 7s linear 1.2s infinite;
+    }
+    .hero .tagline {
+      font-size: clamp(1rem, 2.5vw, 1.25rem);
+      color: var(--text-muted);
+      max-width: 600px;
+      margin: 0 auto 1.5rem;
+      animation-delay: .3s;
+    }
+    .hero .location { font-size: .9rem; color: var(--text-muted); margin-bottom: 2rem; animation-delay: .45s; }
+    .hero .location i { margin-right: .35rem; color: var(--accent); }
+    .hero-cta { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; animation-delay: .6s; }
+    @keyframes rise { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: none; } }
+    @keyframes shimmer { to { background-position: -200% 0; } }
+
+    .btn {
+      display: inline-flex; align-items: center; gap: .5rem;
+      padding: .65rem 1.5rem;
+      font-family: var(--font-sans);
+      font-size: .875rem;
+      font-weight: 600;
+      border-radius: 6px;
+      border: 1px solid var(--accent);
+      cursor: pointer;
+      transition: all .25s;
+      text-transform: uppercase;
+      letter-spacing: .04em;
+    }
+    .btn-primary { background: var(--accent); color: var(--bg); }
+    .btn-primary:hover { background: var(--accent-hover); color: var(--bg); box-shadow: 0 0 24px rgba(66,220,163,.45); }
+    .btn-outline { background: transparent; color: var(--accent); }
+    .btn-outline:hover { background: var(--accent); color: var(--bg); box-shadow: 0 0 24px rgba(66,220,163,.45); }
+
+    /* ───────────────────── Scroll-triggered entrances ───────────────────── */
+    .js .reveal .rv {
+      opacity: 0;
+      transform: translateY(32px);
+      transition: opacity .8s ease, transform .8s var(--ease);
+      transition-delay: calc(var(--i, 0) * .1s);
+    }
+    .js .reveal.visible .rv { opacity: 1; transform: none; }
 
     /* ───────────────────── About ───────────────────── */
     .about-grid {
@@ -184,15 +262,9 @@
       gap: 3rem;
       align-items: start;
     }
-    @media (max-width: 768px) {
-      .about-grid { grid-template-columns: 1fr; }
-    }
-    .about-text p { margin-bottom: 1.25rem; color: var(--text); }
-
-    .skills-list {
-      display: flex; flex-wrap: wrap; gap: .5rem;
-      list-style: none;
-    }
+    @media (max-width: 768px) { .about-grid { grid-template-columns: 1fr; gap: 2rem; } }
+    .about-text p { margin-bottom: 1.25rem; }
+    .skills-list { display: flex; flex-wrap: wrap; gap: .5rem; list-style: none; }
     .skills-list li {
       padding: .35rem .85rem;
       background: var(--bg-card);
@@ -201,145 +273,197 @@
       font-size: .8rem;
       font-family: var(--font-mono);
       color: var(--accent);
+      transition: border-color .2s, transform .2s, box-shadow .2s;
+    }
+    .skills-list li:hover {
+      border-color: var(--accent);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 18px rgba(66,220,163,.15);
     }
 
-    /* ───────────────────── Projects ───────────────────── */
+    /* ───────────────────── Projects showcase ───────────────────── */
     .demo-callout {
       display: flex;
       align-items: center;
       gap: .75rem;
-      background: rgba(66, 220, 163, .08);
-      border: 1px solid rgba(66, 220, 163, .25);
+      background: rgba(66,220,163,.08);
+      border: 1px solid rgba(66,220,163,.25);
       border-radius: 8px;
-      padding: .85rem 1.25rem;
-      margin-bottom: 2rem;
+      padding: .75rem 1.25rem;
+      margin-bottom: 1.75rem;
       font-size: .9rem;
     }
     .demo-callout i { color: var(--accent); font-size: 1.15rem; flex-shrink: 0; }
-    .demo-callout a { font-weight: 600; }
+    .demo-callout a { font-weight: 600; white-space: nowrap; }
 
-    .projects-grid {
+    .showcase { display: grid; grid-template-columns: 250px 1fr; gap: 2.5rem; align-items: stretch; }
+
+    /* Index list */
+    .lib-index { list-style: none; display: flex; flex-direction: column; border-left: 1px solid var(--border); }
+    .lib-tab {
+      position: relative;
+      width: 100%;
+      display: flex; align-items: baseline; gap: .85rem;
+      padding: .6rem 1rem;
+      background: none; border: none;
+      color: var(--text-muted);
+      font-family: var(--font-mono);
+      font-size: .85rem;
+      text-align: left;
+      cursor: pointer;
+      transition: color .2s, background .2s, padding .3s var(--ease);
+    }
+    .lib-tab .num { font-size: .7rem; opacity: .55; }
+    .lib-tab:hover { color: var(--text); background: rgba(255,255,255,.03); }
+    .lib-tab[aria-selected="true"] { color: var(--accent); padding-left: 1.4rem; background: rgba(66,220,163,.06); }
+    .lib-tab[aria-selected="true"] .num { opacity: 1; }
+    /* active marker + autoplay progress run along the left rule */
+    .lib-tab::before {
+      content: ''; position: absolute; left: -1px; top: 0; bottom: 0; width: 2px;
+      background: var(--accent);
+      transform: scaleY(0); transform-origin: top;
+    }
+    .lib-tab[aria-selected="true"]::before { transform: scaleY(1); }
+    .showcase.autoplay .lib-tab[aria-selected="true"]::before { animation: progress var(--cycle) linear forwards; }
+    .showcase.paused .lib-tab[aria-selected="true"]::before { animation-play-state: paused; }
+    @keyframes progress { from { transform: scaleY(0); } to { transform: scaleY(1); } }
+
+    /* Detail stage */
+    .lib-stage {
+      position: relative;
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-      gap: 1.5rem;
-    }
-    .project-card {
-      background: var(--bg-card);
+      min-height: 22rem;
       border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 1.75rem;
-      transition: border-color .2s, transform .2s;
-      display: flex;
-      flex-direction: column;
+      border-radius: 14px;
+      background: var(--bg-card);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      overflow: hidden;
     }
-    .project-card:hover {
-      border-color: var(--accent);
-      transform: translateY(-2px);
+    .lib-stage::before { /* soft accent wash following the active item */
+      content: ''; position: absolute; inset: 0;
+      background: radial-gradient(ellipse at 100% 0%, rgba(66,220,163,.14), transparent 55%);
+      pointer-events: none;
     }
-    .project-card h3 {
-      font-size: 1.15rem;
-      margin-bottom: .5rem;
-      display: flex;
-      align-items: center;
-      gap: .5rem;
+    .lib { grid-area: 1 / 1; position: relative; padding: 2.25rem 2.5rem; display: flex; flex-direction: column; justify-content: center; }
+    .js .lib { opacity: 0; visibility: hidden; transform: translateX(24px); transition: opacity .45s ease, transform .55s var(--ease), visibility 0s .55s; }
+    .js .lib.active { opacity: 1; visibility: visible; transform: none; transition-delay: 0s; }
+    .lib-ghost { /* oversized index number behind the text */
+      position: absolute; right: 1.5rem; bottom: -1.5rem;
+      font-family: var(--font-mono); font-weight: 700;
+      font-size: clamp(7rem, 16vw, 12rem); line-height: 1;
+      color: transparent; -webkit-text-stroke: 1px rgba(66,220,163,.16);
+      pointer-events: none; user-select: none;
     }
-    .project-card h3 i { color: var(--accent); font-size: .95rem; }
-    .project-card p {
-      color: var(--text-muted);
-      font-size: .9rem;
-      flex: 1;
-      margin-bottom: 1rem;
+    .lib-kicker { font-family: var(--font-mono); font-size: .75rem; letter-spacing: .12em; text-transform: uppercase; color: var(--accent); }
+    .lib h3 {
+      font-family: var(--font-mono);
+      font-size: clamp(1.6rem, 4vw, 2.4rem);
+      font-weight: 700;
+      letter-spacing: -.02em;
+      color: #fff;
+      margin: .35rem 0 1rem;
     }
-    .project-meta {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-      font-size: .8rem;
-      color: var(--text-muted);
+    .lib p { position: relative; max-width: 34rem; color: var(--text-muted); font-size: 1.02rem; }
+    .lib-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 1.1rem; margin-top: 1.25rem; font-size: .8rem; color: var(--text-muted); }
+    .lib-meta span { display: inline-flex; align-items: center; gap: .35rem; }
+    .lang-dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; background: #f34b7d; /* C++ */ }
+    .lib-links { position: relative; display: flex; flex-wrap: wrap; gap: .75rem; margin-top: 1.5rem; }
+    .lib-links a {
+      display: inline-flex; align-items: center; gap: .45rem;
+      padding: .5rem 1rem;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      font-size: .78rem; font-weight: 600;
+      text-transform: uppercase; letter-spacing: .04em;
+      transition: border-color .2s, background .2s, color .2s;
     }
-    .project-meta span { display: flex; align-items: center; gap: .3rem; }
-    .lang-dot {
-      display: inline-block;
-      width: 10px; height: 10px;
-      border-radius: 50%;
-      background: #f34b7d; /* C++ GitHub color */
-    }
-    .project-links { display: flex; gap: .75rem; margin-top: .75rem; }
-    .project-links a {
-      font-size: .8rem;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: .04em;
+    .lib-links a:hover { border-color: var(--accent); background: rgba(66,220,163,.1); }
+    .lib-links a.primary { border-color: var(--accent); }
+
+    /* Without JS every library is listed one under another */
+    html:not(.js) .lib-index { display: none; }
+    html:not(.js) .lib-stage { display: block; }
+    html:not(.js) .lib + .lib { border-top: 1px solid var(--border); }
+
+    @media (max-width: 860px) {
+      .showcase { grid-template-columns: 1fr; gap: 1rem; }
+      .lib-index { flex-direction: row; overflow-x: auto; border-left: none; border-bottom: 1px solid var(--border); scrollbar-width: none; }
+      .lib-index::-webkit-scrollbar { display: none; }
+      .lib-index li { flex: none; }
+      .lib-tab { padding: .6rem .9rem; white-space: nowrap; }
+      .lib-tab .num { display: none; }
+      .lib-tab[aria-selected="true"] { padding-left: .9rem; }
+      .lib-tab::before { left: 0; right: 0; top: auto; bottom: -1px; width: auto; height: 2px; transform: scaleX(0); transform-origin: left; }
+      .lib-tab[aria-selected="true"]::before { transform: scaleX(1); }
+      @keyframes progress { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+      .lib { padding: 1.75rem 1.5rem; }
+      .lib-stage { min-height: 21rem; }
     }
 
     /* ───────────────────── Experience ───────────────────── */
-    .timeline { position: relative; padding-left: 2rem; }
-    .timeline::before {
-      content: '';
-      position: absolute;
-      left: 0; top: 0; bottom: 0;
-      width: 2px;
-      background: var(--border);
+    .timeline {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem 3rem;
+      counter-reset: step;
     }
-    .timeline-item { position: relative; margin-bottom: 2.5rem; }
+    @media (max-width: 768px) { .timeline { grid-template-columns: 1fr; gap: 1.25rem; } }
+    .timeline-item { position: relative; padding-top: 1.1rem; border-top: 1px solid var(--border); }
     .timeline-item::before {
       content: '';
-      position: absolute;
-      left: -2rem; top: .45rem;
-      width: 12px; height: 12px;
+      position: absolute; top: -6px; left: 0;
+      width: 11px; height: 11px;
       border-radius: 50%;
       background: var(--accent);
-      border: 2px solid var(--bg);
+      box-shadow: 0 0 0 4px rgba(66,220,163,.15), 0 0 14px rgba(66,220,163,.6);
     }
-    .timeline-item h3 { font-size: 1.05rem; margin-bottom: .15rem; text-transform: none; letter-spacing: normal; }
-    .timeline-item .company { color: var(--accent); font-weight: 500; margin-bottom: .25rem; }
-    .timeline-item .period { font-size: .8rem; color: var(--text-muted); margin-bottom: .5rem; }
+    .timeline-item h3 { font-size: 1.05rem; margin-bottom: .15rem; }
+    .timeline-item .company { color: var(--accent); font-weight: 500; margin-bottom: .1rem; }
+    .timeline-item .period { font-family: var(--font-mono); font-size: .75rem; color: var(--text-muted); margin-bottom: .5rem; }
     .timeline-item p { font-size: .9rem; color: var(--text-muted); }
 
     /* ───────────────────── Contact ───────────────────── */
     #contact { text-align: center; }
-    .social-links {
-      display: flex;
-      justify-content: center;
-      gap: 1rem;
-      flex-wrap: wrap;
-      margin-top: 2rem;
-    }
+    #contact .section-subtitle { margin-left: auto; margin-right: auto; }
+    .social-links { display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap; margin-top: 2rem; padding: 1rem; }
     .social-btn {
-      display: inline-flex;
-      align-items: center;
-      gap: .5rem;
+      display: inline-flex; align-items: center; gap: .5rem;
       padding: .6rem 1.25rem;
       border: 1px solid var(--border);
-      border-radius: 6px;
+      border-radius: 999px;
+      background: rgba(11,15,14,.5);
       color: var(--text);
-      font-size: .85rem;
-      font-weight: 500;
-      transition: all .2s;
+      font-size: .85rem; font-weight: 500;
+      transition: all .25s;
     }
-    .social-btn:hover {
-      border-color: var(--accent);
-      color: var(--accent);
-    }
-    .social-btn i { font-size: 1rem; }
+    .social-btn:hover { border-color: var(--accent); color: var(--accent); box-shadow: 0 0 24px rgba(66,220,163,.3); transform: translateY(-2px); }
+    footer { position: absolute; bottom: 1.1rem; left: 0; right: 0; font-size: .78rem; color: var(--text-muted); }
+    #contact .scroll-hint { bottom: 3.4rem; }
 
-    /* ───────────────────── Footer ───────────────────── */
-    footer {
-      padding: 2rem 1.5rem;
-      text-align: center;
-      border-top: 1px solid var(--border);
-      font-size: .8rem;
-      color: var(--text-muted);
+    /* ───────────────────── Reduced motion ───────────────────── */
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      *, *::before, *::after { animation: none !important; transition: none !important; }
+      .js .reveal .rv, .js .lib.active { opacity: 1; transform: none; }
     }
   </style>
 </head>
 
 <body>
 
+  <!-- ─── Animated background ─── -->
+  <div class="bg" aria-hidden="true">
+    <div class="orb orb-a"></div>
+    <div class="orb orb-b"></div>
+    <div class="orb orb-c"></div>
+    <canvas class="particles" id="particles"></canvas>
+  </div>
+
   <!-- ─── Navigation ─── -->
   <nav>
     <div class="nav-inner">
-      <a href="#" class="nav-brand">dasmig</a>
+      <a href="#home" class="nav-brand">dasmig</a>
       <button class="nav-toggle" aria-label="Toggle menu" onclick="document.querySelector('.nav-links').classList.toggle('open')">
         <i class="fa-solid fa-bars"></i>
       </button>
@@ -353,7 +477,7 @@
   </nav>
 
   <!-- ─── Hero ─── -->
-  <section class="hero" id="home">
+  <header class="panel hero" id="home">
     <div>
       <h1>Diego Dasso Migotto</h1>
       <p class="tagline">Software Engineer &amp; Architect — C++, .NET, C#. Open-source library author.</p>
@@ -366,317 +490,455 @@
           <i class="fa-brands fa-linkedin"></i> LinkedIn
         </a>
       </div>
-      <a href="#about" class="scroll-indicator" aria-label="Scroll down">
-        <i class="fa-solid fa-chevron-down"></i>
-      </a>
     </div>
-  </section>
+    <a class="scroll-hint" href="#about" aria-label="Scroll to About"></a>
+  </header>
 
-  <!-- ─── About ─── -->
-  <section id="about">
-    <div class="container">
-      <h2 class="section-title">About</h2>
-      <p class="section-subtitle">A quick overview of who I am and what I work with.</p>
-      <div class="about-grid">
-        <div class="about-text">
-          <p>
-            I'm a senior software engineer based in Porto Alegre, Brazil, working at
-            <strong>AEL Sistemas</strong> in the defense and aerospace sector. I hold a degree
-            in Computer Science from the Federal University of Rio Grande do Sul (UFRGS).
-          </p>
-          <p>
-            I have experience leading development teams, designing software architectures,
-            interfacing directly with clients, and delivering products across domains
-            ranging from GIS data processing and hardware automated testing to
-            AI-powered data analysis tools. I enjoy building clean APIs, working with
-            parallel programming, and contributing to open-source in my spare time.
-          </p>
-        </div>
-        <div>
-          <h3 class="section-title" style="font-size:1.1rem; margin-bottom:1rem;">Technologies</h3>
-          <ul class="skills-list">
-            <li>C++</li>
-            <li>C#</li>
-            <li>.NET</li>
-            <li>Electron</li>
-            <li>GDAL</li>
-            <li>TCP/ICD</li>
-            <li>Microservices</li>
-            <li>Git</li>
-            <li>CI/CD</li>
-            <li>RAG / AI Agents</li>
-            <li>Linux</li>
-            <li>Python</li>
-            <li>CMake</li>
-            <li>Docker</li>
-          </ul>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ─── Projects ─── -->
-  <section id="projects">
-    <div class="container">
-      <h2 class="section-title">Open-Source Projects</h2>
-      <p class="section-subtitle">Header-only C++23 libraries for procedural generation — people, places, personalities, interests, and entities.</p>
-
-      <div class="demo-callout">
-        <i class="fa-solid fa-microchip"></i>
-        <span><strong>Try them live</strong> — eight of the nine libraries run in the browser via WebAssembly.
-          <a href="https://dasmig.github.io/generator-tech-demo/" target="_blank" rel="noopener">Launch interactive demo →</a></span>
-      </div>
-
-      <div class="projects-grid">
-        <!-- name-generator -->
-        <div class="project-card">
-          <h3><i class="fa-solid fa-code"></i> name-generator</h3>
-          <p>A header-only C++23 library for generating real-world first names and
-            surnames from culture/gender-specific lists. Supports 20+ nationalities.</p>
-          <div class="project-meta">
-            <span><span class="lang-dot"></span> C++</span>
-            <span><i class="fa-solid fa-star"></i> 31</span>
-            <span><i class="fa-solid fa-code-fork"></i> 4</span>
+  <main>
+    <!-- ─── About ─── -->
+    <section class="panel reveal" id="about" aria-labelledby="about-title">
+      <div class="container">
+        <h2 class="section-title rv" id="about-title">About</h2>
+        <p class="section-subtitle rv">A quick overview of who I am and what I work with.</p>
+        <div class="about-grid">
+          <div class="about-text rv">
+            <p>
+              I'm a senior software engineer based in Porto Alegre, Brazil, working at
+              <strong>AEL Sistemas</strong> in the defense and aerospace sector. I hold a degree
+              in Computer Science from the Federal University of Rio Grande do Sul (UFRGS).
+            </p>
+            <p>
+              I have experience leading development teams, designing software architectures,
+              interfacing directly with clients, and delivering products across domains
+              ranging from GIS data processing and hardware automated testing to
+              AI-powered data analysis tools. I enjoy building clean APIs, working with
+              parallel programming, and contributing to open-source in my spare time.
+            </p>
           </div>
-          <div class="project-links">
-            <a href="https://github.com/dasmig/name-generator" target="_blank" rel="noopener">
-              <i class="fa-brands fa-github"></i> Source
-            </a>
-            <a href="https://dasmig.github.io/generator-tech-demo/" target="_blank" rel="noopener">
-              <i class="fa-solid fa-play"></i> Live Demo
-            </a>
-          </div>
-        </div>
-
-        <!-- nickname-generator -->
-        <div class="project-card">
-          <h3><i class="fa-solid fa-code"></i> nickname-generator</h3>
-          <p>A header-only C++23 library for generating nicknames, supporting
-            name-based and custom-word-based nickname generation.</p>
-          <div class="project-meta">
-            <span><span class="lang-dot"></span> C++</span>
-          </div>
-          <div class="project-links">
-            <a href="https://github.com/dasmig/nickname-generator" target="_blank" rel="noopener">
-              <i class="fa-brands fa-github"></i> Source
-            </a>
-            <a href="https://dasmig.github.io/generator-tech-demo/" target="_blank" rel="noopener">
-              <i class="fa-solid fa-play"></i> Live Demo
-            </a>
-          </div>
-        </div>
-
-        <!-- birth-generator -->
-        <div class="project-card">
-          <h3><i class="fa-solid fa-code"></i> birth-generator</h3>
-          <p>A header-only C++23 library for generating demographically plausible
-            birthdays using UN WPP 2024 population data and seasonal patterns.</p>
-          <div class="project-meta">
-            <span><span class="lang-dot"></span> C++</span>
-          </div>
-          <div class="project-links">
-            <a href="https://github.com/dasmig/birth-generator" target="_blank" rel="noopener">
-              <i class="fa-brands fa-github"></i> Source
-            </a>
-            <a href="https://dasmig.github.io/generator-tech-demo/" target="_blank" rel="noopener">
-              <i class="fa-solid fa-play"></i> Live Demo
-            </a>
-          </div>
-        </div>
-
-        <!-- biodata-generator -->
-        <div class="project-card">
-          <h3><i class="fa-solid fa-code"></i> biodata-generator</h3>
-          <p>A header-only C++23 library for generating physical characteristics —
-            height, weight, eye/hair color, blood type — using population statistics.</p>
-          <div class="project-meta">
-            <span><span class="lang-dot"></span> C++</span>
-          </div>
-          <div class="project-links">
-            <a href="https://github.com/dasmig/biodata-generator" target="_blank" rel="noopener">
-              <i class="fa-brands fa-github"></i> Source
-            </a>
-            <a href="https://dasmig.github.io/generator-tech-demo/" target="_blank" rel="noopener">
-              <i class="fa-solid fa-play"></i> Live Demo
-            </a>
-          </div>
-        </div>
-
-        <!-- interest-generator -->
-        <div class="project-card">
-          <h3><i class="fa-solid fa-code"></i> interest-generator</h3>
-          <p>A header-only C++23 library for religion, hobbies and favourite film,
-            game, book and music genres, shaped by a person's country, age and sex —
-            measured from Eurostat time-use surveys where data exists.</p>
-          <div class="project-meta">
-            <span><span class="lang-dot"></span> C++</span>
-          </div>
-          <div class="project-links">
-            <a href="https://github.com/dasmig/interest-generator" target="_blank" rel="noopener">
-              <i class="fa-brands fa-github"></i> Source
-            </a>
-            <a href="https://dasmig.github.io/generator-tech-demo/" target="_blank" rel="noopener">
-              <i class="fa-solid fa-play"></i> Live Demo
-            </a>
-          </div>
-        </div>
-
-        <!-- trait-generator -->
-        <div class="project-card">
-          <h3><i class="fa-solid fa-code"></i> trait-generator</h3>
-          <p>A header-only C++23 library for procedural personality generation —
-            traits from a weighted catalogue with conflicts, synergies and Big Five axes.</p>
-          <div class="project-meta">
-            <span><span class="lang-dot"></span> C++</span>
-          </div>
-          <div class="project-links">
-            <a href="https://github.com/dasmig/trait-generator" target="_blank" rel="noopener">
-              <i class="fa-brands fa-github"></i> Source
-            </a>
-          </div>
-        </div>
-
-        <!-- city-generator -->
-        <div class="project-card">
-          <h3><i class="fa-solid fa-code"></i> city-generator</h3>
-          <p>A header-only C++23 library for generating random cities with
-            population-weighted selection from GeoNames data.</p>
-          <div class="project-meta">
-            <span><span class="lang-dot"></span> C++</span>
-          </div>
-          <div class="project-links">
-            <a href="https://github.com/dasmig/city-generator" target="_blank" rel="noopener">
-              <i class="fa-brands fa-github"></i> Source
-            </a>
-            <a href="https://dasmig.github.io/generator-tech-demo/" target="_blank" rel="noopener">
-              <i class="fa-solid fa-play"></i> Live Demo
-            </a>
-          </div>
-        </div>
-
-        <!-- country-generator -->
-        <div class="project-card">
-          <h3><i class="fa-solid fa-code"></i> country-generator</h3>
-          <p>A header-only C++23 library for generating random countries with
-            comprehensive metadata — geography, politics, culture, and telecom.</p>
-          <div class="project-meta">
-            <span><span class="lang-dot"></span> C++</span>
-          </div>
-          <div class="project-links">
-            <a href="https://github.com/dasmig/country-generator" target="_blank" rel="noopener">
-              <i class="fa-brands fa-github"></i> Source
-            </a>
-            <a href="https://dasmig.github.io/generator-tech-demo/" target="_blank" rel="noopener">
-              <i class="fa-solid fa-play"></i> Live Demo
-            </a>
-          </div>
-        </div>
-
-        <!-- entity-generator -->
-        <div class="project-card">
-          <h3><i class="fa-solid fa-code"></i> entity-generator</h3>
-          <p>A header-only C++23 library for generating entities with extensible,
-            user-defined components. Supports EnTT and Flecs adapters.</p>
-          <div class="project-meta">
-            <span><span class="lang-dot"></span> C++</span>
-            <span><i class="fa-solid fa-star"></i> 2</span>
-          </div>
-          <div class="project-links">
-            <a href="https://github.com/dasmig/entity-generator" target="_blank" rel="noopener">
-              <i class="fa-brands fa-github"></i> Source
-            </a>
-            <a href="https://dasmig.github.io/generator-tech-demo/" target="_blank" rel="noopener">
-              <i class="fa-solid fa-play"></i> Live Demo
-            </a>
+          <div class="rv">
+            <h3 class="section-title" style="font-size:1.1rem; margin-bottom:1rem;">Technologies</h3>
+            <ul class="skills-list">
+              <li>C++</li>
+              <li>C#</li>
+              <li>.NET</li>
+              <li>Electron</li>
+              <li>GDAL</li>
+              <li>TCP/ICD</li>
+              <li>Microservices</li>
+              <li>Git</li>
+              <li>CI/CD</li>
+              <li>RAG / AI Agents</li>
+              <li>Linux</li>
+              <li>Python</li>
+              <li>CMake</li>
+              <li>Docker</li>
+            </ul>
           </div>
         </div>
       </div>
-    </div>
-  </section>
+      <a class="scroll-hint" href="#projects" aria-label="Scroll to Projects"></a>
+    </section>
 
-  <!-- ─── Experience ─── -->
-  <section id="experience">
-    <div class="container">
-      <h2 class="section-title">Experience</h2>
-      <p class="section-subtitle">Professional background and education.</p>
+    <!-- ─── Projects ─── -->
+    <section class="panel reveal" id="projects" aria-labelledby="projects-title">
+      <div class="container">
+        <h2 class="section-title rv" id="projects-title">Open-Source Projects</h2>
+        <p class="section-subtitle rv" style="margin-bottom:1.5rem;">Header-only C++23 libraries for procedural generation — people, places, personalities, interests, and entities.</p>
 
-      <div class="timeline">
-        <div class="timeline-item">
-          <h3>Product Owner &amp; Software Architect — Automated Test Platform</h3>
-          <div class="company">AEL Sistemas</div>
-          <div class="period">Nov 2024 – Present</div>
-          <p>Led a software team building a desktop application for automated
-            hardware testing. Defined the product roadmap as product owner,
-            interfaced directly with the client, and designed the system
-            architecture: a microservices back-end in .NET with a front-end
-            running in Electron.</p>
+        <div class="demo-callout rv">
+          <i class="fa-solid fa-microchip"></i>
+          <span><strong>Try them live</strong> — eight of the nine libraries run in the browser via WebAssembly.
+            <a href="https://dasmig.github.io/generator-tech-demo/" target="_blank" rel="noopener">Launch interactive demo →</a></span>
         </div>
 
-        <div class="timeline-item">
-          <h3>Lead Developer &amp; Software Architect — GIS Data Converter</h3>
-          <div class="company">AEL Sistemas</div>
-          <div class="period">Aug 2018 – Nov 2024</div>
-          <p>Joined as an intern and grew into lead developer. Built and optimized
-            C++ components, authored custom GDAL drivers, engineered requirements,
-            designed software modules, and established E2E and unit testing
-            practices for the team. Interfaced with the client and participated
-            in on-site integration trips.</p>
-        </div>
+        <div class="showcase rv" id="showcase">
+          <!-- index list is built from the articles below by the script -->
+          <ul class="lib-index" role="tablist" aria-label="Libraries" aria-orientation="vertical"></ul>
 
-        <div class="timeline-item">
-          <h3>Notable Projects</h3>
-          <div class="company">AEL Sistemas</div>
-          <p>Developed a C# library for low-level TCP communication over a custom
-            ICD, handling message serialization with a clean, developer-friendly API.
-            Integrated an AI Agent into UAV data analysis tools with database
-            connectivity and a RAG pipeline for indexing flight data and surfacing
-            analytical insights.</p>
-        </div>
+          <div class="lib-stage">
+            <article class="lib" data-name="name-generator">
+              <div class="lib-ghost" aria-hidden="true">01</div>
+              <span class="lib-kicker">Names</span>
+              <h3>name-generator</h3>
+              <p>A header-only C++23 library for generating real-world first names and
+                surnames from culture/gender-specific lists. Supports 20+ nationalities.</p>
+              <div class="lib-meta">
+                <span><span class="lang-dot"></span> C++</span>
+                <span><i class="fa-solid fa-star"></i> 31</span>
+                <span><i class="fa-solid fa-code-fork"></i> 4</span>
+              </div>
+              <div class="lib-links">
+                <a class="primary" href="https://github.com/dasmig/name-generator" target="_blank" rel="noopener"><i class="fa-brands fa-github"></i> Source</a>
+                <a href="https://dasmig.github.io/generator-tech-demo/" target="_blank" rel="noopener"><i class="fa-solid fa-play"></i> Live Demo</a>
+              </div>
+            </article>
 
-        <div class="timeline-item">
-          <h3>B.Sc. Computer Science</h3>
-          <div class="company">Universidade Federal do Rio Grande do Sul (UFRGS)</div>
-          <div class="period">2014 – 2025</div>
-          <p>Porto Alegre, Brazil.</p>
+            <article class="lib" data-name="nickname-generator">
+              <div class="lib-ghost" aria-hidden="true">02</div>
+              <span class="lib-kicker">Nicknames</span>
+              <h3>nickname-generator</h3>
+              <p>A header-only C++23 library for generating nicknames, supporting
+                name-based and custom-word-based nickname generation.</p>
+              <div class="lib-meta">
+                <span><span class="lang-dot"></span> C++</span>
+              </div>
+              <div class="lib-links">
+                <a class="primary" href="https://github.com/dasmig/nickname-generator" target="_blank" rel="noopener"><i class="fa-brands fa-github"></i> Source</a>
+                <a href="https://dasmig.github.io/generator-tech-demo/" target="_blank" rel="noopener"><i class="fa-solid fa-play"></i> Live Demo</a>
+              </div>
+            </article>
+
+            <article class="lib" data-name="birth-generator">
+              <div class="lib-ghost" aria-hidden="true">03</div>
+              <span class="lib-kicker">Birthdays</span>
+              <h3>birth-generator</h3>
+              <p>A header-only C++23 library for generating demographically plausible
+                birthdays using UN WPP 2024 population data and seasonal patterns.</p>
+              <div class="lib-meta">
+                <span><span class="lang-dot"></span> C++</span>
+              </div>
+              <div class="lib-links">
+                <a class="primary" href="https://github.com/dasmig/birth-generator" target="_blank" rel="noopener"><i class="fa-brands fa-github"></i> Source</a>
+                <a href="https://dasmig.github.io/generator-tech-demo/" target="_blank" rel="noopener"><i class="fa-solid fa-play"></i> Live Demo</a>
+              </div>
+            </article>
+
+            <article class="lib" data-name="biodata-generator">
+              <div class="lib-ghost" aria-hidden="true">04</div>
+              <span class="lib-kicker">Physical traits</span>
+              <h3>biodata-generator</h3>
+              <p>A header-only C++23 library for generating physical characteristics —
+                height, weight, eye/hair color, blood type — using population statistics.</p>
+              <div class="lib-meta">
+                <span><span class="lang-dot"></span> C++</span>
+              </div>
+              <div class="lib-links">
+                <a class="primary" href="https://github.com/dasmig/biodata-generator" target="_blank" rel="noopener"><i class="fa-brands fa-github"></i> Source</a>
+                <a href="https://dasmig.github.io/generator-tech-demo/" target="_blank" rel="noopener"><i class="fa-solid fa-play"></i> Live Demo</a>
+              </div>
+            </article>
+
+            <article class="lib" data-name="interest-generator">
+              <div class="lib-ghost" aria-hidden="true">05</div>
+              <span class="lib-kicker">Interests</span>
+              <h3>interest-generator</h3>
+              <p>A header-only C++23 library for religion, hobbies and favourite film,
+                game, book and music genres, shaped by a person's country, age and sex —
+                measured from Eurostat time-use surveys where data exists.</p>
+              <div class="lib-meta">
+                <span><span class="lang-dot"></span> C++</span>
+              </div>
+              <div class="lib-links">
+                <a class="primary" href="https://github.com/dasmig/interest-generator" target="_blank" rel="noopener"><i class="fa-brands fa-github"></i> Source</a>
+                <a href="https://dasmig.github.io/generator-tech-demo/" target="_blank" rel="noopener"><i class="fa-solid fa-play"></i> Live Demo</a>
+              </div>
+            </article>
+
+            <article class="lib" data-name="trait-generator">
+              <div class="lib-ghost" aria-hidden="true">06</div>
+              <span class="lib-kicker">Personality</span>
+              <h3>trait-generator</h3>
+              <p>A header-only C++23 library for procedural personality generation —
+                traits from a weighted catalogue with conflicts, synergies and Big Five axes.</p>
+              <div class="lib-meta">
+                <span><span class="lang-dot"></span> C++</span>
+              </div>
+              <div class="lib-links">
+                <a class="primary" href="https://github.com/dasmig/trait-generator" target="_blank" rel="noopener"><i class="fa-brands fa-github"></i> Source</a>
+              </div>
+            </article>
+
+            <article class="lib" data-name="city-generator">
+              <div class="lib-ghost" aria-hidden="true">07</div>
+              <span class="lib-kicker">Cities</span>
+              <h3>city-generator</h3>
+              <p>A header-only C++23 library for generating random cities with
+                population-weighted selection from GeoNames data.</p>
+              <div class="lib-meta">
+                <span><span class="lang-dot"></span> C++</span>
+              </div>
+              <div class="lib-links">
+                <a class="primary" href="https://github.com/dasmig/city-generator" target="_blank" rel="noopener"><i class="fa-brands fa-github"></i> Source</a>
+                <a href="https://dasmig.github.io/generator-tech-demo/" target="_blank" rel="noopener"><i class="fa-solid fa-play"></i> Live Demo</a>
+              </div>
+            </article>
+
+            <article class="lib" data-name="country-generator">
+              <div class="lib-ghost" aria-hidden="true">08</div>
+              <span class="lib-kicker">Countries</span>
+              <h3>country-generator</h3>
+              <p>A header-only C++23 library for generating random countries with
+                comprehensive metadata — geography, politics, culture, and telecom.</p>
+              <div class="lib-meta">
+                <span><span class="lang-dot"></span> C++</span>
+              </div>
+              <div class="lib-links">
+                <a class="primary" href="https://github.com/dasmig/country-generator" target="_blank" rel="noopener"><i class="fa-brands fa-github"></i> Source</a>
+                <a href="https://dasmig.github.io/generator-tech-demo/" target="_blank" rel="noopener"><i class="fa-solid fa-play"></i> Live Demo</a>
+              </div>
+            </article>
+
+            <article class="lib" data-name="entity-generator">
+              <div class="lib-ghost" aria-hidden="true">09</div>
+              <span class="lib-kicker">Entities</span>
+              <h3>entity-generator</h3>
+              <p>A header-only C++23 library for generating entities with extensible,
+                user-defined components. Supports EnTT and Flecs adapters.</p>
+              <div class="lib-meta">
+                <span><span class="lang-dot"></span> C++</span>
+                <span><i class="fa-solid fa-star"></i> 2</span>
+              </div>
+              <div class="lib-links">
+                <a class="primary" href="https://github.com/dasmig/entity-generator" target="_blank" rel="noopener"><i class="fa-brands fa-github"></i> Source</a>
+                <a href="https://dasmig.github.io/generator-tech-demo/" target="_blank" rel="noopener"><i class="fa-solid fa-play"></i> Live Demo</a>
+              </div>
+            </article>
+          </div>
         </div>
       </div>
-    </div>
-  </section>
+      <a class="scroll-hint" href="#experience" aria-label="Scroll to Experience"></a>
+    </section>
 
-  <!-- ─── Contact ─── -->
-  <section id="contact">
-    <div class="container">
-      <h2 class="section-title">Get in Touch</h2>
-      <p class="section-subtitle" style="margin-left:auto;margin-right:auto;">
-        Feel free to reach out for collaborations, open-source contributions, or just to say hi.
-      </p>
-      <div class="social-links">
-        <a href="mailto:diegomigotto@hotmail.com" class="social-btn">
-          <i class="fa-solid fa-envelope"></i> Email
-        </a>
-        <a href="https://github.com/dasmig" class="social-btn" target="_blank" rel="noopener">
-          <i class="fa-brands fa-github"></i> GitHub
-        </a>
-        <a href="https://www.linkedin.com/in/dasmig/" class="social-btn" target="_blank" rel="noopener">
-          <i class="fa-brands fa-linkedin"></i> LinkedIn
-        </a>
+    <!-- ─── Experience ─── -->
+    <section class="panel reveal" id="experience" aria-labelledby="experience-title">
+      <div class="container">
+        <h2 class="section-title rv" id="experience-title">Experience</h2>
+        <p class="section-subtitle rv">Professional background and education.</p>
+
+        <div class="timeline">
+          <div class="timeline-item rv">
+            <h3>Product Owner &amp; Software Architect — Automated Test Platform</h3>
+            <div class="company">AEL Sistemas</div>
+            <div class="period">Nov 2024 – Present</div>
+            <p>Led a software team building a desktop application for automated
+              hardware testing. Defined the product roadmap as product owner,
+              interfaced directly with the client, and designed the system
+              architecture: a microservices back-end in .NET with a front-end
+              running in Electron.</p>
+          </div>
+
+          <div class="timeline-item rv">
+            <h3>Lead Developer &amp; Software Architect — GIS Data Converter</h3>
+            <div class="company">AEL Sistemas</div>
+            <div class="period">Aug 2018 – Nov 2024</div>
+            <p>Joined as an intern and grew into lead developer. Built and optimized
+              C++ components, authored custom GDAL drivers, engineered requirements,
+              designed software modules, and established E2E and unit testing
+              practices for the team. Interfaced with the client and participated
+              in on-site integration trips.</p>
+          </div>
+
+          <div class="timeline-item rv">
+            <h3>Notable Projects</h3>
+            <div class="company">AEL Sistemas</div>
+            <p>Developed a C# library for low-level TCP communication over a custom
+              ICD, handling message serialization with a clean, developer-friendly API.
+              Integrated an AI Agent into UAV data analysis tools with database
+              connectivity and a RAG pipeline for indexing flight data and surfacing
+              analytical insights.</p>
+          </div>
+
+          <div class="timeline-item rv">
+            <h3>B.Sc. Computer Science</h3>
+            <div class="company">Universidade Federal do Rio Grande do Sul (UFRGS)</div>
+            <div class="period">2014 – 2025</div>
+            <p>Porto Alegre, Brazil.</p>
+          </div>
+        </div>
       </div>
-    </div>
-  </section>
+      <a class="scroll-hint" href="#contact" aria-label="Scroll to Contact"></a>
+    </section>
 
-  <!-- ─── Footer ─── -->
-  <footer>
-    <p>&copy; 2026 Diego Dasso Migotto. Built with plain HTML &amp; CSS.</p>
-  </footer>
+    <!-- ─── Contact ─── -->
+    <section class="panel reveal" id="contact" aria-labelledby="contact-title">
+      <div class="container">
+        <h2 class="section-title rv" id="contact-title">Get in Touch</h2>
+        <p class="section-subtitle rv">
+          Feel free to reach out for collaborations, open-source contributions, or just to say hi.
+        </p>
+        <div class="social-links rv">
+          <a href="mailto:diegomigotto@hotmail.com" class="social-btn">
+            <i class="fa-solid fa-envelope"></i> Email
+          </a>
+          <a href="https://github.com/dasmig" class="social-btn" target="_blank" rel="noopener">
+            <i class="fa-brands fa-github"></i> GitHub
+          </a>
+          <a href="https://www.linkedin.com/in/dasmig/" class="social-btn" target="_blank" rel="noopener">
+            <i class="fa-brands fa-linkedin"></i> LinkedIn
+          </a>
+        </div>
+      </div>
+      <a class="scroll-hint up" href="#home" aria-label="Back to top"></a>
+      <footer>
+        <p>&copy; 2026 Diego Dasso Migotto. Built with plain HTML, CSS &amp; a little JS.</p>
+      </footer>
+    </section>
+  </main>
 
-  <!-- Minimal vanilla JS – no jQuery needed -->
   <script>
-    // Close mobile menu on link click
-    document.querySelectorAll('.nav-links a').forEach(link => {
-      link.addEventListener('click', () => {
-        document.querySelector('.nav-links').classList.remove('open');
-      });
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    // ── Nav: close mobile menu on click ─────────────────────────────
+    document.querySelectorAll('.nav-links a').forEach(link =>
+      link.addEventListener('click', () => document.querySelector('.nav-links').classList.remove('open')));
+
+    // ── Reveal: stagger children, replay each time a panel is in view ──
+    document.querySelectorAll('.reveal').forEach(section => {
+      section.querySelectorAll('.rv').forEach((el, i) => el.style.setProperty('--i', i));
+      new IntersectionObserver(([e]) => section.classList.toggle('visible', e.isIntersecting),
+        { threshold: 0.35 }).observe(section);
     });
+
+    // ── Nav: highlight the current section ──────────────────────────
+    const navLinks = [...document.querySelectorAll('.nav-links a')];
+    const spy = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if (!e.isIntersecting) return;
+        navLinks.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + e.target.id));
+      });
+    }, { threshold: 0.5 });
+    document.querySelectorAll('.panel').forEach(s => spy.observe(s));
+
+    // ── Projects showcase ───────────────────────────────────────────
+    (() => {
+      const showcase = document.getElementById('showcase');
+      const list = showcase.querySelector('.lib-index');
+      const libs = [...showcase.querySelectorAll('.lib')];
+      let current = 0;
+      let userPicked = false;
+      let inView = false;
+
+      const tabs = libs.map((lib, i) => {
+        const li = document.createElement('li');
+        const b = document.createElement('button');
+        b.className = 'lib-tab';
+        b.type = 'button';
+        b.setAttribute('role', 'tab');
+        b.innerHTML = `<span class="num">${String(i + 1).padStart(2, '0')}</span>${lib.dataset.name}`;
+        b.addEventListener('click', () => { userPicked = true; select(i); });
+        b.addEventListener('keydown', e => {
+          const step = { ArrowDown: 1, ArrowRight: 1, ArrowUp: -1, ArrowLeft: -1 }[e.key];
+          if (!step) return;
+          e.preventDefault();
+          userPicked = true;
+          select((i + step + libs.length) % libs.length, true);
+        });
+        li.appendChild(b);
+        list.appendChild(li);
+        lib.setAttribute('role', 'tabpanel');
+        return b;
+      });
+
+      function select(i, focus) {
+        current = i;
+        libs.forEach((l, n) => l.classList.toggle('active', n === i));
+        tabs.forEach((t, n) => {
+          t.setAttribute('aria-selected', n === i);
+          t.tabIndex = n === i ? 0 : -1;
+        });
+        if (focus) tabs[i].focus();
+        // keep the active tab visible in the horizontal mobile strip
+        tabs[i].scrollIntoView({ block: 'nearest', inline: 'nearest' });
+        // restart the progress animation
+        showcase.classList.remove('autoplay');
+        void showcase.offsetWidth;
+        if (!reduced && !userPicked) showcase.classList.add('autoplay');
+      }
+
+      // Auto-advance when the progress bar completes; pause while hovered or off-screen.
+      showcase.addEventListener('animationend', e => {
+        if (e.animationName === 'progress') select((current + 1) % libs.length);
+      });
+      const syncPause = () => showcase.classList.toggle('paused', !inView || showcase.matches(':hover'));
+      showcase.addEventListener('mouseenter', syncPause);
+      showcase.addEventListener('mouseleave', syncPause);
+      new IntersectionObserver(([e]) => { inView = e.isIntersecting; syncPause(); },
+        { threshold: 0.4 }).observe(showcase);
+
+      select(0);
+    })();
+
+    // ── Background particles ────────────────────────────────────────
+    // Glow dust drifting upward; swarms the contact buttons while that panel is on screen.
+    (() => {
+      const canvas = document.getElementById('particles');
+      const ctx = canvas.getContext('2d');
+      const rand = (a, b) => a + Math.random() * (b - a);
+
+      const sprite = document.createElement('canvas');
+      sprite.width = sprite.height = 64;
+      const sg = sprite.getContext('2d');
+      const grad = sg.createRadialGradient(32, 32, 0, 32, 32, 32);
+      grad.addColorStop(0, 'rgba(190, 255, 232, 1)');
+      grad.addColorStop(0.25, 'rgba(66, 220, 163, 0.6)');
+      grad.addColorStop(1, 'rgba(66, 220, 163, 0)');
+      sg.fillStyle = grad;
+      sg.fillRect(0, 0, 64, 64);
+
+      let w = 0, h = 0, particles = [], flocking = false, raf = 0, last = performance.now();
+      const flockSection = document.getElementById('contact');
+      const flockTarget = document.querySelector('.social-links');
+
+      const spawn = anywhere => ({
+        x: rand(0, w), y: anywhere ? rand(0, h) : h + 10,
+        size: rand(1.5, 3.2), speed: rand(18, 48), sway: rand(6, 22), phase: rand(0, Math.PI * 2),
+        angle: rand(0, Math.PI * 2), spin: rand(0.5, 1.3) * (Math.random() < 0.5 ? -1 : 1),
+        rx: rand(0, 1), ry: rand(0, 1), ease: rand(1.2, 3), boost: 0,
+      });
+
+      function resize() {
+        const dpr = Math.min(window.devicePixelRatio || 1, 2);
+        w = window.innerWidth; h = window.innerHeight;
+        canvas.width = w * dpr; canvas.height = h * dpr;
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        particles = Array.from({ length: w < 700 ? 28 : 48 }, () => spawn(true));
+      }
+
+      function frame(now) {
+        const dt = Math.min((now - last) / 1000, 0.05);
+        last = now;
+        ctx.clearRect(0, 0, w, h);
+
+        let tx = 0, ty = 0, tw = 0, th = 0, hasTarget = false;
+        if (flocking) {
+          const r = flockTarget.getBoundingClientRect();
+          tx = r.left + r.width / 2;
+          ty = Math.min(Math.max(r.top + r.height / 2, 40), h - 40);
+          tw = r.width; th = r.height; hasTarget = true;
+        }
+
+        for (const p of particles) {
+          if (hasTarget) {
+            p.angle += p.spin * dt;
+            const rx = tw / 2 + 18 + p.rx * 70, ry = th / 2 + 14 + p.ry * 46;
+            const k = 1 - Math.exp(-dt * p.ease);
+            p.x += (tx + Math.cos(p.angle) * rx - p.x) * k;
+            p.y += (ty + Math.sin(p.angle) * ry - p.y) * k;
+            p.boost = Math.min(1, p.boost + dt * 1.5);
+          } else {
+            p.y -= p.speed * dt;
+            p.x += Math.sin(now / 1000 + p.phase) * p.sway * dt;
+            p.boost = Math.max(0, p.boost - dt * 1.5);
+            if (p.y < -10) Object.assign(p, spawn(false));
+          }
+          // fade near the top and bottom edges while drifting
+          const edge = Math.min(p.y, h - p.y) / (h * 0.25);
+          ctx.globalAlpha = Math.max(Math.max(0, Math.min(1, edge)) * 0.8, p.boost);
+          const s = p.size * (6 + p.boost * 3);
+          ctx.drawImage(sprite, p.x - s / 2, p.y - s / 2, s, s);
+        }
+        raf = requestAnimationFrame(frame);
+      }
+
+      resize();
+      window.addEventListener('resize', resize);
+      new IntersectionObserver(([e]) => { flocking = e.isIntersecting; }, { threshold: 0.5 }).observe(flockSection);
+      document.addEventListener('visibilitychange', () => {
+        cancelAnimationFrame(raf);
+        if (!document.hidden && !reduced) { last = performance.now(); raf = requestAnimationFrame(frame); }
+      });
+      if (!reduced) raf = requestAnimationFrame(frame);
+    })();
   </script>
 
 </body>
