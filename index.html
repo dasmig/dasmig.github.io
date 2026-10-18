@@ -543,11 +543,11 @@
     <section class="panel reveal" id="projects" aria-labelledby="projects-title">
       <div class="container">
         <h2 class="section-title rv" id="projects-title">Open-Source Projects</h2>
-        <p class="section-subtitle rv" style="margin-bottom:1.5rem;">Header-only C++23 libraries for procedural generation — people, places, personalities, interests, occupations, and entities.</p>
+        <p class="section-subtitle rv" style="margin-bottom:1.5rem;">Header-only C++23 libraries for procedural generation — people, places, addresses, phone numbers, emails, personalities, interests, occupations, and entities.</p>
 
         <div class="demo-callout rv">
           <i class="fa-solid fa-microchip"></i>
-          <span><strong>Try them live</strong> — all ten libraries run in the browser via WebAssembly.
+          <span><strong>Try them live</strong> — every library except address-generator runs in the browser via WebAssembly.
             <a href="https://dasmig.github.io/generator-tech-demo/" target="_blank" rel="noopener">Launch interactive demo →</a></span>
         </div>
 
@@ -556,8 +556,25 @@
           <ul class="lib-index" role="tablist" aria-label="Libraries" aria-orientation="vertical"></ul>
 
           <div class="lib-stage">
-            <article class="lib" data-name="name-generator">
+            <article class="lib" data-name="persona-generator">
               <div class="lib-ghost" aria-hidden="true">01</div>
+              <span class="lib-kicker">Personas</span>
+              <h3>persona-generator</h3>
+              <p>A header-only C++23 library that composes the other generators into
+                complete fictional characters: a country, a city, a birth, a body, a
+                name, interests, an occupation and a personality, each conditioned on
+                what was drawn before.</p>
+              <div class="lib-meta">
+                <span><span class="lang-dot"></span> C++</span>
+              </div>
+              <div class="lib-links">
+                <a class="primary" href="https://github.com/dasmig/persona-generator" target="_blank" rel="noopener"><i class="fa-brands fa-github"></i> Source</a>
+                <a href="https://dasmig.github.io/generator-tech-demo/" target="_blank" rel="noopener"><i class="fa-solid fa-play"></i> Live Demo</a>
+              </div>
+            </article>
+
+            <article class="lib" data-name="name-generator">
+              <div class="lib-ghost" aria-hidden="true">02</div>
               <span class="lib-kicker">Names</span>
               <h3>name-generator</h3>
               <p>A header-only C++23 library for generating real-world first names and
@@ -572,7 +589,7 @@
             </article>
 
             <article class="lib" data-name="nickname-generator">
-              <div class="lib-ghost" aria-hidden="true">02</div>
+              <div class="lib-ghost" aria-hidden="true">03</div>
               <span class="lib-kicker">Nicknames</span>
               <h3>nickname-generator</h3>
               <p>A header-only C++23 library for generating nicknames, supporting
@@ -587,7 +604,7 @@
             </article>
 
             <article class="lib" data-name="birth-generator">
-              <div class="lib-ghost" aria-hidden="true">03</div>
+              <div class="lib-ghost" aria-hidden="true">04</div>
               <span class="lib-kicker">Birthdays</span>
               <h3>birth-generator</h3>
               <p>A header-only C++23 library for generating demographically plausible
@@ -602,7 +619,7 @@
             </article>
 
             <article class="lib" data-name="biodata-generator">
-              <div class="lib-ghost" aria-hidden="true">04</div>
+              <div class="lib-ghost" aria-hidden="true">05</div>
               <span class="lib-kicker">Physical traits</span>
               <h3>biodata-generator</h3>
               <p>A header-only C++23 library for generating physical characteristics —
@@ -617,7 +634,7 @@
             </article>
 
             <article class="lib" data-name="interest-generator">
-              <div class="lib-ghost" aria-hidden="true">05</div>
+              <div class="lib-ghost" aria-hidden="true">06</div>
               <span class="lib-kicker">Interests</span>
               <h3>interest-generator</h3>
               <p>A header-only C++23 library for religion, hobbies and favourite film,
@@ -633,7 +650,7 @@
             </article>
 
             <article class="lib" data-name="trait-generator">
-              <div class="lib-ghost" aria-hidden="true">06</div>
+              <div class="lib-ghost" aria-hidden="true">07</div>
               <span class="lib-kicker">Personality</span>
               <h3>trait-generator</h3>
               <p>A header-only C++23 library for procedural personality generation —
@@ -648,7 +665,7 @@
             </article>
 
             <article class="lib" data-name="occupation-generator">
-              <div class="lib-ghost" aria-hidden="true">07</div>
+              <div class="lib-ghost" aria-hidden="true">08</div>
               <span class="lib-kicker">Occupations</span>
               <h3>occupation-generator</h3>
               <p>A header-only C++23 library for employment status, education and jobs
@@ -664,7 +681,7 @@
             </article>
 
             <article class="lib" data-name="city-generator">
-              <div class="lib-ghost" aria-hidden="true">08</div>
+              <div class="lib-ghost" aria-hidden="true">09</div>
               <span class="lib-kicker">Cities</span>
               <h3>city-generator</h3>
               <p>A header-only C++23 library for generating random cities with
@@ -679,7 +696,7 @@
             </article>
 
             <article class="lib" data-name="country-generator">
-              <div class="lib-ghost" aria-hidden="true">09</div>
+              <div class="lib-ghost" aria-hidden="true">10</div>
               <span class="lib-kicker">Countries</span>
               <h3>country-generator</h3>
               <p>A header-only C++23 library for generating random countries with
@@ -693,8 +710,55 @@
               </div>
             </article>
 
+            <article class="lib" data-name="address-generator">
+              <div class="lib-ghost" aria-hidden="true">11</div>
+              <span class="lib-kicker">Addresses</span>
+              <h3>address-generator</h3>
+              <p>A header-only C++23 library for postal addresses with real streets by
+                place from OpenStreetMap, laid out in each country's format for 250
+                territories.</p>
+              <div class="lib-meta">
+                <span><span class="lang-dot"></span> C++</span>
+              </div>
+              <div class="lib-links">
+                <a class="primary" href="https://github.com/dasmig/address-generator" target="_blank" rel="noopener"><i class="fa-brands fa-github"></i> Source</a>
+              </div>
+            </article>
+
+            <article class="lib" data-name="phone-generator">
+              <div class="lib-ghost" aria-hidden="true">12</div>
+              <span class="lib-kicker">Phones</span>
+              <h3>phone-generator</h3>
+              <p>A header-only C++23 library for phone numbers that are valid in each
+                country's numbering plan, drawn from libphonenumber's ranges, with a
+                safe option that uses the numbers regulators reserve for fiction.</p>
+              <div class="lib-meta">
+                <span><span class="lang-dot"></span> C++</span>
+              </div>
+              <div class="lib-links">
+                <a class="primary" href="https://github.com/dasmig/phone-generator" target="_blank" rel="noopener"><i class="fa-brands fa-github"></i> Source</a>
+                <a href="https://dasmig.github.io/generator-tech-demo/" target="_blank" rel="noopener"><i class="fa-solid fa-play"></i> Live Demo</a>
+              </div>
+            </article>
+
+            <article class="lib" data-name="email-generator">
+              <div class="lib-ghost" aria-hidden="true">13</div>
+              <span class="lib-kicker">Emails</span>
+              <h3>email-generator</h3>
+              <p>A header-only C++23 library for email addresses in each country's style
+                from a name, nickname and birth year, with the providers people use
+                there and a safe option with the reserved example domains.</p>
+              <div class="lib-meta">
+                <span><span class="lang-dot"></span> C++</span>
+              </div>
+              <div class="lib-links">
+                <a class="primary" href="https://github.com/dasmig/email-generator" target="_blank" rel="noopener"><i class="fa-brands fa-github"></i> Source</a>
+                <a href="https://dasmig.github.io/generator-tech-demo/" target="_blank" rel="noopener"><i class="fa-solid fa-play"></i> Live Demo</a>
+              </div>
+            </article>
+
             <article class="lib" data-name="entity-generator">
-              <div class="lib-ghost" aria-hidden="true">10</div>
+              <div class="lib-ghost" aria-hidden="true">14</div>
               <span class="lib-kicker">Entities</span>
               <h3>entity-generator</h3>
               <p>A header-only C++23 library for generating entities with extensible,
